@@ -1,0 +1,3 @@
+rootProject.name = 'nutro'
+include 'ui', 'core', 'gateway'
+

@@ -1,0 +1,19 @@
+server:
+  port: 8080
+zuul:
+  routes:
+    app:
+      path: /api/**
+      #url: http://localhost:5000/api
+      url: http://saeedPc:9090/api
+      #url: http://192.168.100.7:9090/api
+      #url: http://192.168.100.2:9090/api
+    ui:
+      path: /**
+      url: http://localhost:5000
+  host:
+    socket-timeout-millis: 900000
+multipart:
+  max-file-size: 10MB
+  max-request-size: 10MB
+

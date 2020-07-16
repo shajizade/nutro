@@ -1,0 +1,96 @@
+server:
+  port: 9090
+  session-timeout: 360000000
+  servlet:
+    context-path: /api
+    session:
+      persistent: true
+      timeout: 3600000
+spring:
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      schema: "classpath:org/springframework/session/jdbc/schema-@@platform@@.sql"
+      table-name: spring_session
+  datasource:
+    url: jdbc:mysql://localhost/nutro
+    username: root
+    dbcp2:
+      validation-query: SELECT 1
+      test-on-borrow: true
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
+  http:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+um:
+  publicPaths: /login
+sms:
+  tokenUrl: http://RestfulSms.com/api/Token
+  UserApiKey: ac94cf0bfce4ab229502cf0b
+  SecretKey: salamjalil
+  smsUrl: http://RestfulSms.com/api/VerificationCode
+  smsTokenHeaderKey: x-sms-ir-secure-token
+  smsTokenTemplateUrl: http://RestfulSms.com/api/UltraFastSend
+  smsCustomerClubAddSend: http://RestfulSms.com/api/CustomerClub/AddContactAndSend
+  tokenKey: VerificationCode
+  templateId: 1085
+
+proxy:
+  host: localhost
+  port: 8580
+payment:
+  merchantId: 8a4045e4-3276-11e8-a848-005056a205be
+  callbackURL: http://localhost:8080/api/order/completePay/
+  paymentRequest: https://www.zarinpal.com/pg/rest/WebGate/PaymentRequest.json
+  paymentVerificationURL: https://www.zarinpal.com/pg/rest/WebGate/PaymentVerification.json
+  startPayURL: https://www.zarinpal.com/pg/StartPay/
+  viewCompletePayment: http://localhost:8080/#/app/my-order?view=afterPay&orderId=
+panel:
+  domain: https://panel.ad-venture.ir/
+  debug: true
+  cpaPassword: "@dVenture"
+  websiteOrganizationId: 81
+  adventureOrganizationId: 71
+  engagementUrl: "http://s.ad-venture.ir:8099/engagement.php?username="
+  screenshotPath: "C:/test/"
+  notification:
+    server-private-key-path: key.public
+    server-public-key-path: key.private
+  ocr:
+    dataPath: "D:\\"
+pdf:
+  fontPath: "C:\\XBZar.ttf"
+bot:
+  telegramUrl: http://localhost:9091/core
+  instagramUrl: http://localhost:9091/instaCore
+  accessHash: hashA
+shortLink:
+  baseDomain: advn.ir/
+  advn:
+    baseUrl: http://advn.ir/api/
+    apiKey: hashB
+  clickMeter:
+    baseUrl: http://apiv2.shortLink.com/
+    domainId: 41872
+    apiKey: 30C6EB11-4F3B-488A-BAF6-2806D6C73379
+crmHook:
+  hash: 123
+recaptcha:
+  secret: 6LfVI7UUAAAAAFiiOZbD6HJi3rIH-0VcB4-J5wWn
+finnotech:
+  baseUrl: https://sandboxapi.finnotech.ir
+  refreshTokenUrl: /dev/v2/oauth2/token
+  transferUrl: /oak/v2/clients/${finnotech.clientId}/transferTo?trackId={trackId}
+  bankCode: "062"
+  clientId: "adventure"
+  clientSecret: "9706be287e2ed0d1d1a6"
+logging:
+  config: file:./src/main/resources/logback.xml
+

@@ -1,0 +1,33 @@
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    apply plugin: 'idea'
+    version = '1.0.0'
+
+    apply from: "$rootDir/gradle/ci.gradle"
+}
+ext {
+    javaProjects = [':core', ':gateway'].collect {
+        project it
+    }
+    webProjects = ['ui'].collect { project it }
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+subprojects {
+    if (project in javaProjects) {
+        apply plugin: 'java'
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+
+    }
+}
+
+
+
