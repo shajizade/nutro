@@ -48,4 +48,20 @@ public class Nutrition implements Serializable {
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Nutrition)) return false;
+
+        Nutrition nutrition = (Nutrition) o;
+
+        return getId() != null ? getId().equals(nutrition.getId()) : nutrition.getId() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

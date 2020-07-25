@@ -1,7 +1,10 @@
 package ir.haji.nutro.panel.food;
 
+import ir.haji.nutro.dto.DataTypeObject;
+import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.Food;
 import ir.haji.nutro.panel.food.entity.FullFood;
+import ir.haji.nutro.panel.food.entity.FullRecipe;
 import ir.haji.nutro.panel.food.service.FoodService;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +36,21 @@ public class FoodController {
     }
 
     @RolesAllowed({BasicRole.NAME})
-    @RequestMapping(value = "/calculate", method = RequestMethod.GET)
-    private String getFullById(@RequestParam List<Long> ids) {
-        return foodService.calculate(ids);
+    @RequestMapping(value = "/calculate", method = RequestMethod.PUT)
+    private String calculate(@RequestBody List<DataTypeObject> foods, @RequestParam Double portionGrams) {
+        return foodService.calculate(foods, portionGrams);
+    }
+
+    @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/recipe", method = RequestMethod.POST)
+    private FullRecipe nerRecipe(@RequestBody FullRecipe recipe) {
+        return foodService.createRecipe(recipe);
+    }
+
+    @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/recipe/{id}", method = RequestMethod.GET)
+    private NutritionFacts getRecipe(@PathVariable Long id) {
+        return foodService.getRecipe(id);
     }
 
 }
