@@ -17,17 +17,32 @@ public class NutritionFacts implements Iterable<NutriotionAmount> {
         add(nutrition, amount, 1.0);
     }
 
-    public void add(Nutrition nutrition, Double amount, Double coefficient) {
+    public void add(Nutrition nutrition, Double amount, Double... coefficients) {
         NutriotionAmount nutAmount = nutritions.get(nutrition);
         if (nutAmount == null) {
             nutAmount = new NutriotionAmount(nutrition, new Doubler());
             nutritions.put(nutrition, nutAmount);
         }
-        nutAmount.getAmount().add(new Doubler(amount).multiply(coefficient));
+        Doubler thisAmount = new Doubler(amount);
+        for (Double coefficient : coefficients) {
+            thisAmount.multiply(coefficient);
+        }
+        nutAmount.getAmount().add(thisAmount);
     }
 
     @Override
     public Iterator<NutriotionAmount> iterator() {
         return nutritions.values().iterator();
+    }
+
+    public void add(NutritionFacts facts) {
+        add(facts, 1d);
+    }
+
+    public void add(NutritionFacts recipeFacts, Double... coefficients) {
+        for (NutriotionAmount facts : recipeFacts) {
+            add(facts.getNutrition(), facts.getAmount().toDouble(), coefficients);
+        }
+
     }
 }
