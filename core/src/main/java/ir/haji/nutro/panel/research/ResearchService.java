@@ -1,5 +1,6 @@
 package ir.haji.nutro.panel.research;
 
+import ir.haji.nutro.panel.food.dto.NutriotionAmount;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.FoodNutrition;
 import ir.haji.nutro.panel.food.entity.FullFood;
@@ -32,8 +33,8 @@ public class ResearchService {
     public String output(Long id) {
         StringBuilder result = new StringBuilder();
         List<Case> cases = caseRepo.findByResearchId(id);
-        NutritionFacts facts = new NutritionFacts();
         for (Case aCase : cases) {
+            NutritionFacts facts = new NutritionFacts();
             result.append(aCase.getName()).append(" | ").append(aCase.getCode()).append("\n");
             List<CaseDetail> details = caseDetailRepo.findByCaseId(aCase.getId());
             for (CaseDetail detail : details) {
@@ -51,6 +52,10 @@ public class ResearchService {
                     facts.add(recipeFacts, detail.getAmount());
                 }
             }
+            for (NutriotionAmount fact : facts) {
+                result.append("\t").append(fact.getNutrition().getName()).append(": ").append(fact.getAmount()).append(fact.getNutrition().getUnit().getName()).append("\n");
+            }
+            result.append("\n");
         }
         return result.toString();
     }
