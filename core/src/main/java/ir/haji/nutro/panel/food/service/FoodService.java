@@ -12,6 +12,7 @@ import ir.haji.nutro.util.Doubler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -120,5 +121,9 @@ public class FoodService {
         if (!recipe.isPresent())
             throw new BadRequestException("این رسپی وجود ندارد");
         return recipe.get();
+    }
+
+    public Page<Food> searchFood(FoodSpec specification) {
+        return foodRepo.findAll(specification, specification.getPageable());
     }
 }

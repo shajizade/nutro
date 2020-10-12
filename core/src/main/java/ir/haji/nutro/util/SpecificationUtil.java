@@ -56,14 +56,13 @@ public class SpecificationUtil {
         if (page == null || page < 0)
             page = 0;
         if (size == null || size < 1)
-            size = 1000;
+            size = 100;
         return PageRequest.of(page, size, sort);
     }
 
     public String getDefaultSort() {
         return null;
     }
-
     private Sort getSortObject() {
         if (sort == null || sort.isEmpty() || sort.trim().equals(",")) {
             if (getDefaultSort() != null)

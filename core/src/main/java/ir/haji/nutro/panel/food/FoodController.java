@@ -3,11 +3,13 @@ package ir.haji.nutro.panel.food;
 import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.Food;
+import ir.haji.nutro.panel.food.entity.FoodSpec;
 import ir.haji.nutro.panel.food.entity.FullFood;
 import ir.haji.nutro.panel.food.entity.FullRecipe;
 import ir.haji.nutro.panel.food.service.FoodService;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -22,6 +24,12 @@ import java.util.List;
 public class FoodController {
     @Autowired
     FoodService foodService;
+
+    @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    private Page<Food> getById(FoodSpec specification) {
+        return foodService.searchFood(specification);
+    }
 
     @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
