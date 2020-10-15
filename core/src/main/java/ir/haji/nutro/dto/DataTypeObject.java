@@ -16,8 +16,9 @@ import java.util.HashMap;
 public class DataTypeObject extends JsonSerializable.Base {
     HashMap<String, Object> objects = new HashMap<>();
 
-    public Object get(String field) {
-        return objects.get(field);
+    public <T> T get(String field) {
+        Object val = objects.get(field);
+        return (T) val;
     }
 
     public DataTypeObject set(Object[] objects, String... names) {

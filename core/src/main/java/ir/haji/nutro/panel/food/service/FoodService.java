@@ -1,5 +1,6 @@
 package ir.haji.nutro.panel.food.service;
 
+import ir.haji.nutro.CommonUtil;
 import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.exception.BadRequestException;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
@@ -51,8 +52,8 @@ public class FoodService {
         HashMap<Nutrition, Doubler> nutritions = new HashMap<>();
         Doubler grams = new Doubler();
         for (DataTypeObject food : foods) {
-            FullFood fullFood = getFullFoodByItemNumber((Long) food.get("number"));
-            Double gram = ((Double) food.get("gram"));
+            FullFood fullFood = getFullFoodByItemNumber(CommonUtil.castToLong(food.get("number")));
+            Double gram = CommonUtil.castToDouble(food.get("gram"));
             grams.add(gram);
             builder.append(fullFood.getFood().getName() + " | " + fullFood.getFood().getId()).append("\n");
 

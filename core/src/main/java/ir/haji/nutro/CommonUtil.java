@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
  *         Date: 11/8/2017
  */
 public class CommonUtil {
-    public static final String UTM_PLACEHOLDER = "[utm_code]";
-
     public static String now() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd|HH:mm:ss.SSS");
         return simpleDateFormat.format(new Date());
@@ -370,6 +368,23 @@ public class CommonUtil {
         return text;
     }
 
+    public static Double castToDouble(Object number) {
+        if (number == null)
+            return null;
+        if (number instanceof String)
+            number = ((String) number).replace("\"", "").replace(",", "");
+        if (number instanceof Double)
+            return (Double) number;
+        if (number instanceof BigDecimal)
+            return ((BigDecimal) number).doubleValue();
+        if (number instanceof String)
+            return parseDouble((String) number);
+        if (number instanceof Long)
+            return ((Long) number).doubleValue();
+        if (number instanceof Integer)
+            return ((Integer) number).doubleValue();
+        return (Double) number;
+    }
     public static Double parseDouble(String number) {
         try {
             return Double.parseDouble(number);
