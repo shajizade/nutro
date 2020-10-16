@@ -92,5 +92,5 @@ finnotech:
   clientId: "adventure"
   clientSecret: "9706be287e2ed0d1d1a6"
 logging:
-  config: file:./src/main/resources/logback.xml
+#  config: file:./src/main/resources/logback.xml
 
