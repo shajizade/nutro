@@ -45,7 +45,7 @@ public class FoodController {
 
     @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/calculate", method = RequestMethod.PUT)
-    private String calculate(@RequestBody List<DataTypeObject> foods, @RequestParam Double portionGrams) {
+    private List<DataTypeObject> calculate(@RequestBody List<DataTypeObject> foods, @RequestParam Double portionGrams) {
         return foodService.calculate(foods, portionGrams);
     }
 

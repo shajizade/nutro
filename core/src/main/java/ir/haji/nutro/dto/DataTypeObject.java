@@ -14,6 +14,7 @@ import java.util.HashMap;
  */
 @JsonDeserialize(using = DataTypeObjectDeserializer.class)
 public class DataTypeObject extends JsonSerializable.Base {
+
     HashMap<String, Object> objects = new HashMap<>();
 
     public <T> T get(String field) {

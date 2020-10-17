@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -47,45 +48,34 @@ public class FoodService {
         return fullFoodRepo.findByFood_ItemNumber(itemNumber);
     }
 
-    public String calculate(List<DataTypeObject> foods, Double portionGrams) {
-        StringBuilder builder = new StringBuilder();
+    public List<DataTypeObject> calculate(List<DataTypeObject> foods, Double portionGrams) {
+        List<DataTypeObject> result = new ArrayList<>();
         HashMap<Nutrition, Doubler> nutritions = new HashMap<>();
         Doubler grams = new Doubler();
         for (DataTypeObject food : foods) {
             FullFood fullFood = getFullFoodByItemNumber(CommonUtil.castToLong(food.get("number")));
             Double gram = CommonUtil.castToDouble(food.get("gram"));
             grams.add(gram);
-            builder.append(fullFood.getFood().getName() + " | " + fullFood.getFood().getId()).append("\n");
-
-            builder.append("{" +
-                    "\"amount\":\"" + gram + "\"," +
-                    "\"food\":{\"id\":\"" + fullFood.getFood().getId() + "\"}" +
-                    "}");
 
             for (FoodNutrition foodNutrition : fullFood.getNutritions()) {
                 if (foodNutrition.getAmount().doubleValue() > 0) {
-                    builder.append("[").append(foodNutrition.getNutrition().getName()).append(":")
-                            .append(foodNutrition.getAmount()).append(" ")
-                            .append(foodNutrition.getNutrition().getUnit().getName())
-                            .append("]\t");
                     Doubler sumAmount = nutritions.get(foodNutrition.getNutrition());
                     Doubler amount = new Doubler(foodNutrition.getAmount()).multiply(gram);
                     sumAmount = amount.add(sumAmount);
                     nutritions.put(foodNutrition.getNutrition(), sumAmount);
                 }
             }
-            builder.append("\n");
         }
-        builder.append("\n\n\n");
+
         for (Nutrition nutrition : nutritions.keySet()) {
-            builder.append(nutrition.getName()).append(":")
-                    .append(nutritions.get(nutrition).divide(grams).multiply(portionGrams).toString()).append(" ")
-                    .append(nutrition.getUnit().getName())
-                    .append("\n");
+            Doubler value = nutritions.get(nutrition);
+            value = value.divide(grams).multiply(portionGrams);
+            DataTypeObject row = new DataTypeObject();
+            row.set("nutrition", nutrition)
+                    .set("amount", value);
+            result.add(row);
         }
-        builder.append("وزن:").append(grams.toString()).append("\n");
-        builder.append("وزن:").append(grams.divide(grams).multiply(portionGrams).toString());
-        return builder.toString();
+        return result;
     }
 
     public FullRecipe createRecipe(FullRecipe fullRecipe) {
