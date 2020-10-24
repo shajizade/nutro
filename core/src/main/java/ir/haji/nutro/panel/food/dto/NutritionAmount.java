@@ -4,13 +4,13 @@ import ir.haji.nutro.panel.food.entity.Nutrition;
 import ir.haji.nutro.util.Doubler;
 
 /**
- * Created by jalil on 7/22/2020.
+ * Created by Saeed on 7/22/2020.
  */
-public class NutriotionAmount {
+public class NutritionAmount {
     Nutrition nutrition;
     Doubler amount;
 
-    public NutriotionAmount(Nutrition nutrition, Doubler amount) {
+    public NutritionAmount(Nutrition nutrition, Doubler amount) {
         this.nutrition = nutrition;
         this.amount = amount;
     }

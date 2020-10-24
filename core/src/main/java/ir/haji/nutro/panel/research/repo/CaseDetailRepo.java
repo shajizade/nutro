@@ -13,4 +13,8 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface CaseDetailRepo extends PagingAndSortingRepository<CaseDetail, Long>, JpaSpecificationExecutor<CaseDetail> {
     List<CaseDetail> findByCaseId(Long id);
+
+    void deleteByCaseIdAndFood_Id(Long caseId, Long foodId);
+
+    void deleteByCaseIdAndRecipe_Id(Long caseId, Long recipeId);
 }

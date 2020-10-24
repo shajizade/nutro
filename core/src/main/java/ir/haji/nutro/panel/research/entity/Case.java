@@ -1,6 +1,7 @@
 package ir.haji.nutro.panel.research.entity;
 
 import ir.haji.nutro.panel.research.constant.Gender;
+import ir.haji.nutro.util.HashUtil;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,6 +24,10 @@ public class Case implements Serializable {
     private Gender gender;
     @Temporal(TemporalType.TIMESTAMP)
     private Date registerDate;
+
+    public String getHashCode() {
+        return HashUtil.getCaseCode(id);
+    }
 
     public Long getId() {
         return id;

@@ -1,7 +1,7 @@
 package ir.haji.nutro.panel.notification.dto;
 
 /**
- * Created by jalil on 1/8/2020.
+ * Created by saeed on 1/8/2020.
  */
 
 public class PushMessage {

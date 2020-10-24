@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Created by jalil on 7/19/2020.
+ * Created by saeed on 7/19/2020.
  */
 public class DataTypeObjectDeserializer extends JsonDeserializer<DataTypeObject> {
 

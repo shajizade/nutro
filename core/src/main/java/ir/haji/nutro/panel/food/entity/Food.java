@@ -2,6 +2,7 @@ package ir.haji.nutro.panel.food.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Saeedon 1/13/2018.
@@ -17,9 +18,18 @@ public class Food implements Serializable {
     private Byte[] picture;
     private String abbreviation;
     private Long itemNumber;
-
+    @JoinColumn(name = "foodId", referencedColumnName = "id")
+    private List<UnitUsage> unitUsages;
     public Long getId() {
         return id;
+    }
+
+    public List<UnitUsage> getUnitUsages() {
+        return unitUsages;
+    }
+
+    public void setUnitUsages(List<UnitUsage> unitUsages) {
+        this.unitUsages = unitUsages;
     }
 
     public void setId(Long id) {

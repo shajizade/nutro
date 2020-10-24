@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Created by jalil on 1/8/2020.
+ * Created by saeed on 1/8/2020.
  */
 
 public class SubscriptionEndpoint {

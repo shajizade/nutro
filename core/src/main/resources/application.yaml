@@ -34,7 +34,7 @@ um:
 sms:
   tokenUrl: http://RestfulSms.com/api/Token
   UserApiKey: ac94cf0bfce4ab229502cf0b
-  SecretKey: salamjalil
+  SecretKey: salamsaeed
   smsUrl: http://RestfulSms.com/api/VerificationCode
   smsTokenHeaderKey: x-sms-ir-secure-token
   smsTokenTemplateUrl: http://RestfulSms.com/api/UltraFastSend

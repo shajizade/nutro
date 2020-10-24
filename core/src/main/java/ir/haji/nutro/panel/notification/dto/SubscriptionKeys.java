@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 /**
- * Created by jalil on 1/8/2020.
+ * Created by saeed on 1/8/2020.
  */
 
 public class SubscriptionKeys implements Serializable {
