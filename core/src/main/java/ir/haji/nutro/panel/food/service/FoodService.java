@@ -5,10 +5,10 @@ import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.exception.BadRequestException;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.*;
+import ir.haji.nutro.panel.food.repo.FoodNutritionRepo;
 import ir.haji.nutro.panel.food.repo.FoodRepo;
 import ir.haji.nutro.panel.food.repo.FullFoodRepo;
-import ir.haji.nutro.panel.food.repo.FullRecipeRepo;
-import ir.haji.nutro.panel.food.repo.RecipeRepo;
+import ir.haji.nutro.panel.food.repo.RecipeRowRepo;
 import ir.haji.nutro.util.Doubler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Saeed on 1/16/2018.
@@ -32,9 +31,11 @@ public class FoodService {
     @Autowired
     FullFoodRepo fullFoodRepo;
     @Autowired
-    private RecipeRepo recipeRepo;
+    private RecipeRowRepo recipeRowRepo;
     @Autowired
-    private FullRecipeRepo fullRecipeRepo;
+    private FoodNutritionRepo foodNutritionRepo;
+    @Autowired
+    private UnitService unitService;
 
     public Food getFoodById(Long id) {
         return foodRepo.findById(id).get();
@@ -78,27 +79,55 @@ public class FoodService {
         return result;
     }
 
-    public FullRecipe createRecipe(FullRecipe fullRecipe) {
-        fullRecipe.getRecipe().setId(null);
-        recipeRepo.save(fullRecipe.getRecipe());
-        fullRecipe.setId(fullRecipe.getRecipe().getId());
+    public void updateRecipe(Long recipeId, List<DataTypeObject> foods) {
+        Food recipe = getFoodById(recipeId);
+        if (!recipe.getRecipe())
+            throw new BadRequestException("این غذا امکان این عملیات را ندارد");
 
-        Doubler weight = new Doubler();
-        for (RecipeRow recipeRow : fullRecipe.getFoods()) {
-            weight.add(recipeRow.getAmount());
+        recipeRowRepo.deleteByRecipeId(recipeId);
+        HashMap<Nutrition, Doubler> nutritions = new HashMap<>();
+        Doubler totalWeghit = new Doubler();
+        List<RecipeRow> rows = new ArrayList<>();
+        for (DataTypeObject food : foods) {
+            FullFood fullFood = getFullFoodById(CommonUtil.castToLong(food.get("foodId")));
+            Double gram = CommonUtil.castToDouble(food.get("gram"));
+            RecipeRow row = new RecipeRow();
+            row.setRecipeId(recipeId);
+            row.setAmount(gram);
+            row.setFood(fullFood);
+            rows.add(row);
+
+            totalWeghit.add(gram);
+
+            for (FoodNutrition foodNutrition : fullFood.getNutritions()) {
+                if (foodNutrition.getAmount().doubleValue() > 0) {
+                    Doubler sumAmount = nutritions.get(foodNutrition.getNutrition());
+                    Doubler amount = new Doubler(foodNutrition.getAmount()).multiply(gram);
+                    sumAmount = amount.add(sumAmount);
+                    nutritions.put(foodNutrition.getNutrition(), sumAmount);
+                }
+            }
         }
-        for (RecipeRow recipeRow : fullRecipe.getFoods()) {
-            recipeRow.setId(null);
-            recipeRow.setRecipeId(fullRecipe.getRecipe().getId());
-            recipeRow.setAmount(new Doubler(recipeRow.getAmount()).divide(weight).toDouble());
+        recipeRowRepo.saveAll(rows);
+
+        foodNutritionRepo.deleteByFoodId(recipeId);
+        List<FoodNutrition> newFoodNutriotions = new ArrayList<>();
+        for (Nutrition nutrition : nutritions.keySet()) {
+            Doubler value = nutritions.get(nutrition);
+            value = value.divide(totalWeghit).multiply(100);
+            FoodNutrition foodNutrition = new FoodNutrition();
+            foodNutrition.setFoodId(recipeId);
+            foodNutrition.setAmount(value.toBigDecimal());
+            foodNutrition.setNutrition(nutrition);
+            newFoodNutriotions.add(foodNutrition);
         }
-        return fullRecipeRepo.save(fullRecipe);
+        foodNutritionRepo.saveAll(newFoodNutriotions);
     }
 
-    public NutritionFacts getRecipe(Long id) {
+    public NutritionFacts getRecipeIngredients(Long id) {
         NutritionFacts nutritionFacts = new NutritionFacts();
-        FullRecipe fullRecipe = getFullRecipe(id);
-        for (RecipeRow recipeRow : fullRecipe.getFoods()) {
+        List<RecipeRow> rows = recipeRowRepo.findByRecipeId(id);
+        for (RecipeRow recipeRow : rows) {
             FullFood food = recipeRow.getFood();
             for (FoodNutrition foodNutrition : food.getNutritions()) {
                 nutritionFacts.add(foodNutrition.getNutrition(), foodNutrition.getAmount().doubleValue());
@@ -106,15 +135,20 @@ public class FoodService {
         }
         return nutritionFacts;
     }
-
-    private FullRecipe getFullRecipe(Long id) {
-        Optional<FullRecipe> recipe = fullRecipeRepo.findById(id);
-        if (!recipe.isPresent())
-            throw new BadRequestException("این رسپی وجود ندارد");
-        return recipe.get();
-    }
-
     public Page<Food> searchFood(FoodSpec specification) {
         return foodRepo.findAll(specification, specification.getPageable());
+    }
+
+    public void setFoodUsages(Long id, List<UnitUsage> usages) {
+        for (UnitUsage usage : usages) {
+            if (usage.getScale() == null || usage.getScale() <= 0)
+                throw new BadRequestException("مقیاس غلط");
+            if (usage.getUnitId() == null)
+                throw new BadRequestException("واحد نباید خالی باشد");
+            unitService.getUnitById(usage.getUnitId());
+            usage.setId(null);
+            usage.setFoodId(id);
+        }
+        unitService.save(usages);
     }
 }

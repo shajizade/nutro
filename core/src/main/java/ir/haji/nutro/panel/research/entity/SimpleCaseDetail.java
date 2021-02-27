@@ -14,7 +14,6 @@ public class SimpleCaseDetail implements Serializable {
     private Long id;
     private Long caseId;
     private Long foodId;
-    private Long recipeId;
     private Long unitId;
     private Double amount;
     private Integer days;
@@ -43,16 +42,6 @@ public class SimpleCaseDetail implements Serializable {
 
     public void setFoodId(Long foodId) {
         this.foodId = foodId == null ? 0 : foodId;
-    }
-
-    public Long getRecipeId() {
-        if (recipeId == null)
-            recipeId = 0l;
-        return recipeId;
-    }
-
-    public void setRecipeId(Long recipeId) {
-        this.recipeId = recipeId == null ? 0 : recipeId;
     }
 
     public Long getUnitId() {

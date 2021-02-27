@@ -18,6 +18,9 @@ public class Food implements Serializable {
     private Byte[] picture;
     private String abbreviation;
     private Long itemNumber;
+    private Long userId;
+    private Boolean isRecipe;
+
     @JoinColumn(name = "foodId", referencedColumnName = "id")
     private List<UnitUsage> unitUsages;
     public Long getId() {
@@ -74,5 +77,21 @@ public class Food implements Serializable {
 
     public void setItemNumber(Long itemNumber) {
         this.itemNumber = itemNumber;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Boolean getRecipe() {
+        return isRecipe;
+    }
+
+    public void setRecipe(Boolean recepie) {
+        isRecipe = recepie;
     }
 }

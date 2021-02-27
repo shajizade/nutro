@@ -1,12 +1,13 @@
-package ir.haji.nutro.panel.food;
+package ir.haji.nutro.panel.food.controller;
 
 import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.Food;
 import ir.haji.nutro.panel.food.entity.FoodSpec;
 import ir.haji.nutro.panel.food.entity.FullFood;
-import ir.haji.nutro.panel.food.entity.FullRecipe;
+import ir.haji.nutro.panel.food.entity.UnitUsage;
 import ir.haji.nutro.panel.food.service.FoodService;
+import ir.haji.nutro.panel.um.predefined.AdminRole;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class FoodController {
 
     @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    private Page<Food> getById(FoodSpec specification) {
+    private Page<Food> search(FoodSpec specification) {
         return foodService.searchFood(specification);
     }
 
@@ -35,6 +36,12 @@ public class FoodController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     private Food getById(@PathVariable Long id) {
         return foodService.getFoodById(id);
+    }
+
+    @RolesAllowed({AdminRole.NAME})
+    @RequestMapping(value = "/{id}/unitUsage", method = RequestMethod.PUT)
+    private void updateUnitUsages(@PathVariable Long id, @RequestBody List<UnitUsage> usages) {
+        foodService.setFoodUsages(id, usages);
     }
 
     @RolesAllowed({BasicRole.NAME})
@@ -50,15 +57,15 @@ public class FoodController {
     }
 
     @RolesAllowed({BasicRole.NAME})
-    @RequestMapping(value = "/recipe", method = RequestMethod.POST)
-    private FullRecipe nerRecipe(@RequestBody FullRecipe recipe) {
-        return foodService.createRecipe(recipe);
+    @RequestMapping(value = "/{id}/ingredients", method = RequestMethod.POST)
+    private void updateRecipe(@PathVariable Long id, @RequestBody List<DataTypeObject> foods) {
+        foodService.updateRecipe(id, foods);
     }
 
     @RolesAllowed({BasicRole.NAME})
-    @RequestMapping(value = "/recipe/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/ingredients", method = RequestMethod.GET)
     private NutritionFacts getRecipe(@PathVariable Long id) {
-        return foodService.getRecipe(id);
+        return foodService.getRecipeIngredients(id);
     }
 
 }

@@ -13,7 +13,7 @@ import java.text.NumberFormat;
  * Created by Saeed on 7/21/2020.
  */
 public class Doubler extends JsonSerializable.Base {
-    NumberFormat instance = NumberFormat.getInstance();
+    NumberFormat numberFormatter = NumberFormat.getInstance();
 
     BigDecimal value;
 
@@ -22,7 +22,8 @@ public class Doubler extends JsonSerializable.Base {
     }
 
     public Doubler(Double dub) {
-        instance.setMaximumFractionDigits(2);
+        numberFormatter.setMaximumFractionDigits(2);
+        numberFormatter.setGroupingUsed(false);
         this.value = new BigDecimal(dub == null ? 0 : dub);
     }
 
@@ -167,12 +168,12 @@ public class Doubler extends JsonSerializable.Base {
     }
 
     public Doubler fractions(int fractionDigits) {
-        instance.setMaximumFractionDigits(fractionDigits);
+        numberFormatter.setMaximumFractionDigits(fractionDigits);
         return this;
     }
 
     public String toString() {
-        return instance.format(value);
+        return numberFormatter.format(value);
     }
 
     @Override

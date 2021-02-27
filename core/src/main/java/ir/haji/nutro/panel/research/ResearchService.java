@@ -5,7 +5,6 @@ import ir.haji.nutro.panel.food.dto.NutritionAmount;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.FoodNutrition;
 import ir.haji.nutro.panel.food.entity.FullFood;
-import ir.haji.nutro.panel.food.entity.Recipe;
 import ir.haji.nutro.panel.food.service.FoodService;
 import ir.haji.nutro.panel.food.service.UnitService;
 import ir.haji.nutro.panel.research.entity.*;
@@ -62,12 +61,14 @@ public class ResearchService {
                         facts.add(foodNutrition.getNutrition(), detail.getAmount(), foodNutrition.getAmount().doubleValue());
                     }
                 }
+/*
                 Recipe recipe = detail.getRecipe();
                 if (recipe != null) {
                     result.append(recipe.getName()).append(" | ").append(detail.getAmount()).append("گرم \n");
-                    NutritionFacts recipeFacts = foodService.getRecipe(recipe.getId());
+                    NutritionFacts recipeFacts = foodService.getRecipeIngredients(recipe.getId());
                     facts.add(recipeFacts, detail.getAmount());
                 }
+*/
             }
             for (NutritionAmount fact : facts) {
                 result.append("\t").append(fact.getNutrition().getName()).append(": ").append(fact.getAmount()).append(fact.getNutrition().getUnit().getName()).append("\n");
@@ -161,10 +162,8 @@ public class ResearchService {
     }
 
     public SimpleCaseDetail createOrUpdateCaseDetail(Long id, Long caseId, SimpleCaseDetail caseDetail) {
-        if (caseDetail.getFoodId() == 0 && caseDetail.getRecipeId() == 0)
-            throw new BadRequestException("باید غذا یا دستور غذا مشخص کنید");
-        if (caseDetail.getFoodId() != 0 && caseDetail.getRecipeId() != 0)
-            throw new BadRequestException("نمی‌توانید همزمان غذا و دستور غذا را در یک ردیف انتخاب کنید");
+        if (caseDetail.getFoodId() == 0)
+            throw new BadRequestException("باید غذا را مشخص کنید");
         if (caseDetail.getAmount() == null)
             throw new BadRequestException("مقدار نمی‌تواند خالی باشد");
         if (caseDetail.getDays() == null || caseDetail.getDays() < 1 || caseDetail.getDays() > 365)
@@ -173,18 +172,15 @@ public class ResearchService {
             throw new BadRequestException("واحد نمی‌تواند خالی باشد");
         checkAuthority(id);
         getCaseOfResearch(id, caseId);
-        unitService.getUnitUsage(caseDetail.getFoodId(), caseDetail.getRecipeId(), caseDetail.getUnitId());
-        removeCaseDetailByCaseIdAndFoodIdAndRecipeId(caseId, caseDetail.getFoodId(), caseDetail.getRecipeId());
+        unitService.getUnitUsage(caseDetail.getFoodId(), caseDetail.getUnitId());
+        removeCaseDetailByCaseIdAndFoodId(caseId, caseDetail.getFoodId());
         caseDetail.setId(null);
         caseDetail.setCaseId(caseId);
         return simpleCaseDetailRepo.save(caseDetail);
     }
 
-    private void removeCaseDetailByCaseIdAndFoodIdAndRecipeId(Long caseId, Long foodId, Long recipeId) {
-        if (foodId != null)
-            caseDetailRepo.deleteByCaseIdAndFood_Id(caseId, foodId);
-        if (recipeId != null)
-            caseDetailRepo.deleteByCaseIdAndRecipe_Id(caseId, recipeId);
+    private void removeCaseDetailByCaseIdAndFoodId(Long caseId, Long foodId) {
+        caseDetailRepo.deleteByCaseIdAndFood_Id(caseId, foodId);
     }
 
 

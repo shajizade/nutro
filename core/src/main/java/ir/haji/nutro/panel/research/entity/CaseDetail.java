@@ -1,7 +1,6 @@
 package ir.haji.nutro.panel.research.entity;
 
 import ir.haji.nutro.panel.food.entity.FullFood;
-import ir.haji.nutro.panel.food.entity.Recipe;
 import ir.haji.nutro.panel.food.entity.Unit;
 import ir.haji.nutro.panel.food.entity.UnitUsage;
 
@@ -20,16 +19,13 @@ public class CaseDetail implements Serializable {
     private Long caseId;
     @JoinColumn(name = "foodId")
     private FullFood food;
-    @JoinColumn(name = "recipeId")
-    private Recipe recipe;
     private Double amount;
     @JoinColumn(name = "unitId")
     private Unit unit;
     @ManyToOne
     @JoinColumns({
             @JoinColumn(updatable = false, insertable = false, name = "unitId", referencedColumnName = "unitId"),
-            @JoinColumn(updatable = false, insertable = false, name = "foodId", referencedColumnName = "foodId"),
-            @JoinColumn(updatable = false, insertable = false, name = "recipeId", referencedColumnName = "recipeId")
+            @JoinColumn(updatable = false, insertable = false, name = "foodId", referencedColumnName = "foodId")
     })
     private UnitUsage unitUsage;
     private Integer days;
@@ -64,14 +60,6 @@ public class CaseDetail implements Serializable {
 
     public void setFood(FullFood food) {
         this.food = food;
-    }
-
-    public Recipe getRecipe() {
-        return recipe;
-    }
-
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
     }
 
     public Double getAmount() {

@@ -14,7 +14,6 @@ public class UnitUsage implements Serializable {
     private Long id;
     private Long unitId;
     private Long foodId;
-    private Long recipeId;
     private Double scale;
 
     public Long getId() {
@@ -39,14 +38,6 @@ public class UnitUsage implements Serializable {
 
     public void setFoodId(Long foodId) {
         this.foodId = foodId;
-    }
-
-    public Long getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(Long recipeId) {
-        this.recipeId = recipeId;
     }
 
     public Double getScale() {

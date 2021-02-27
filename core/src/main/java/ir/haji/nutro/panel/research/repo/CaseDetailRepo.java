@@ -16,5 +16,4 @@ public interface CaseDetailRepo extends PagingAndSortingRepository<CaseDetail, L
 
     void deleteByCaseIdAndFood_Id(Long caseId, Long foodId);
 
-    void deleteByCaseIdAndRecipe_Id(Long caseId, Long recipeId);
 }
