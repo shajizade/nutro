@@ -16,6 +16,15 @@ public class UnitUsage implements Serializable {
     private Long foodId;
     private Double scale;
 
+    public UnitUsage() {
+    }
+
+    public UnitUsage(Long foodId, Long unitId, Double scale) {
+        this.unitId = unitId;
+        this.foodId = foodId;
+        this.scale = scale;
+    }
+
     public Long getId() {
         return id;
     }

@@ -44,9 +44,8 @@ class GlobalControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
-    public
     @ResponseBody
-    ExceptionResponse badRequest(Exception ex) {
+    public ExceptionResponse badRequest(Exception ex) {
         return new ExceptionResponse(ex, this.debug);
     }
 

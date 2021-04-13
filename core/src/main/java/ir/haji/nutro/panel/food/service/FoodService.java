@@ -3,12 +3,8 @@ package ir.haji.nutro.panel.food.service;
 import ir.haji.nutro.CommonUtil;
 import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.exception.BadRequestException;
-import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.*;
-import ir.haji.nutro.panel.food.repo.FoodNutritionRepo;
-import ir.haji.nutro.panel.food.repo.FoodRepo;
-import ir.haji.nutro.panel.food.repo.FullFoodRepo;
-import ir.haji.nutro.panel.food.repo.RecipeRowRepo;
+import ir.haji.nutro.panel.food.repo.*;
 import ir.haji.nutro.util.Doubler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +32,8 @@ public class FoodService {
     private FoodNutritionRepo foodNutritionRepo;
     @Autowired
     private UnitService unitService;
+    @Autowired
+    private NutritionRepo nutritionRepo;
 
     public Food getFoodById(Long id) {
         return foodRepo.findById(id).get();
@@ -86,7 +84,7 @@ public class FoodService {
 
         recipeRowRepo.deleteByRecipeId(recipeId);
         HashMap<Nutrition, Doubler> nutritions = new HashMap<>();
-        Doubler totalWeghit = new Doubler();
+        Doubler totalWeight = new Doubler();
         List<RecipeRow> rows = new ArrayList<>();
         for (DataTypeObject food : foods) {
             FullFood fullFood = getFullFoodById(CommonUtil.castToLong(food.get("foodId")));
@@ -97,7 +95,7 @@ public class FoodService {
             row.setFood(fullFood);
             rows.add(row);
 
-            totalWeghit.add(gram);
+            totalWeight.add(gram);
 
             for (FoodNutrition foodNutrition : fullFood.getNutritions()) {
                 if (foodNutrition.getAmount().doubleValue() > 0) {
@@ -108,13 +106,16 @@ public class FoodService {
                 }
             }
         }
+        for (RecipeRow row : rows) {
+            row.setAmount(new Doubler(row.getAmount()).multiply(100).divide(totalWeight).toDouble());
+        }
         recipeRowRepo.saveAll(rows);
 
         foodNutritionRepo.deleteByFoodId(recipeId);
         List<FoodNutrition> newFoodNutriotions = new ArrayList<>();
         for (Nutrition nutrition : nutritions.keySet()) {
             Doubler value = nutritions.get(nutrition);
-            value = value.divide(totalWeghit).multiply(100);
+            value = value.divide(totalWeight).multiply(100);
             FoodNutrition foodNutrition = new FoodNutrition();
             foodNutrition.setFoodId(recipeId);
             foodNutrition.setAmount(value.toBigDecimal());
@@ -124,16 +125,9 @@ public class FoodService {
         foodNutritionRepo.saveAll(newFoodNutriotions);
     }
 
-    public NutritionFacts getRecipeIngredients(Long id) {
-        NutritionFacts nutritionFacts = new NutritionFacts();
+    public List<RecipeRow> getRecipeIngredients(Long id) {
         List<RecipeRow> rows = recipeRowRepo.findByRecipeId(id);
-        for (RecipeRow recipeRow : rows) {
-            FullFood food = recipeRow.getFood();
-            for (FoodNutrition foodNutrition : food.getNutritions()) {
-                nutritionFacts.add(foodNutrition.getNutrition(), foodNutrition.getAmount().doubleValue());
-            }
-        }
-        return nutritionFacts;
+        return rows;
     }
     public Page<Food> searchFood(FoodSpec specification) {
         return foodRepo.findAll(specification, specification.getPageable());
@@ -150,5 +144,18 @@ public class FoodService {
             usage.setFoodId(id);
         }
         unitService.save(usages);
+    }
+
+    public Food createFood(Food food) {
+        food.setId(null);
+        return foodRepo.save(food);
+    }
+
+    public List<Object[]> getFoodsArrayByResearchTypeId(Long researchTypeId) {
+        return foodRepo.getFoodsArray(researchTypeId);
+    }
+
+    public List<Nutrition> getAllNutriotions() {
+        return nutritionRepo.findAll();
     }
 }

@@ -4,6 +4,7 @@ import ir.haji.nutro.panel.research.entity.CaseDetail;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public interface CaseDetailRepo extends PagingAndSortingRepository<CaseDetail, Long>, JpaSpecificationExecutor<CaseDetail> {
     List<CaseDetail> findByCaseId(Long id);
 
+    @Transactional
     void deleteByCaseIdAndFood_Id(Long caseId, Long foodId);
 
 }

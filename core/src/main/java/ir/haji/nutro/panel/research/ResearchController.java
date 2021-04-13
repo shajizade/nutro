@@ -1,13 +1,17 @@
 package ir.haji.nutro.panel.research;
 
+import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.panel.research.entity.*;
 import ir.haji.nutro.panel.research.repo.CaseDetailRepo;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -81,6 +85,22 @@ public class ResearchController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     private String getResearchOutput(@PathVariable Long id) {
         return researchService.output(id);
+    }
+
+    @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/{id}/foods", method = RequestMethod.GET)
+    private List<DataTypeObject> getResearchFoods(@PathVariable Long id) {
+        return researchService.getResearchFoods(id);
+    }
+
+    @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/{id}/excel", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public
+    @ResponseBody
+    byte[] getResearchExcel(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"report.xlsx\"");
+        return researchService.getResearchExcel(id);
     }
 
 }

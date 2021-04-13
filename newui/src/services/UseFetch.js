@@ -60,11 +60,11 @@ const useFetch = (options)=> {
         finalOptions.url = finalOptions.url.replace("{" + key + "}", finalOptions.urlParams[key]);
       }
     }
+    finalOptions.mode = 'cors';
+    finalOptions.credentials = 'include';
+
     console.log(finalOptions);
     return fetch(BASE_URL + finalOptions.url, finalOptions)
-    /*
-     .then(resp=>{console.log('useFetach resp',resp);return resp})
-     */
       .then(resp=> {
           if (resp.status > 299 || resp.status < 200) {
             throw new BadRequest(resp);

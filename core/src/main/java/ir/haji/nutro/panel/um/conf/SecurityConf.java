@@ -131,7 +131,7 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v2/**").permitAll()
                 .and().httpBasic()
-                .and().formLogin()
+                .and().formLogin().loginProcessingUrl("/log")
                 .successHandler(successHandler).failureHandler(restAuthenticationFailureHandler())
                 .and().logout()
                 .logoutSuccessHandler(restLogoutSuccessHandler())

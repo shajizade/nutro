@@ -17,7 +17,8 @@ public class Research implements Serializable {
     private Long userId;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
-
+    @JoinColumn(name = "researchTypeId")
+    private ResearchType researchType;
     public Long getId() {
         return id;
     }
@@ -48,5 +49,13 @@ public class Research implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public ResearchType getResearchType() {
+        return researchType;
+    }
+
+    public void setResearchType(ResearchType researchType) {
+        this.researchType = researchType;
     }
 }

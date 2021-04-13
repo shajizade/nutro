@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Saeed on 6/9/2020.
@@ -38,6 +40,9 @@ public class DataTypeObject extends JsonSerializable.Base {
         return this;
     }
 
+    public static List<DataTypeObject> listConvert(final List<Object[]> rows, final String... names) {
+        return rows.stream().map(row -> new DataTypeObject().set(row, names)).collect(Collectors.toList());
+    }
     @Override
     public void serialize(JsonGenerator gen, SerializerProvider serializers) throws IOException {
         gen.writeStartObject();

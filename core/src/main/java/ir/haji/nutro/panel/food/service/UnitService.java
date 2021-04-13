@@ -22,9 +22,11 @@ public class UnitService {
     @Autowired
     UnitUsageRepo unitUsageRepo;
     private UnitRepo unitRepo;
+    private Long GRAM_UNIT_ID = 1l;
 
     public UnitUsage getUnitUsage(Long foodId, Long unitId) {
-        foodId = foodId == null ? 0 : foodId;
+        if (unitId == GRAM_UNIT_ID)
+            return new UnitUsage(foodId, unitId, 1d);
         List<UnitUsage> result = unitUsageRepo.findByFoodIdAndUnitId(foodId, unitId);
         if (result == null || result.size() == 0)
             throw new BadRequestException("خطا در واحد اندازه‌گیری");

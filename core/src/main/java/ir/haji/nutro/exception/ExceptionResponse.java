@@ -1,16 +1,18 @@
 package ir.haji.nutro.exception;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExceptionResponse {
+public class ExceptionResponse implements Serializable {
     String message;
     String exception;
     List<String> stackTrace;
 
     public ExceptionResponse(Exception ex, Boolean debug) {
+        ex.printStackTrace();
         message = ex.getMessage();
-        if (debug) {
+        if (!debug) {
             exception = ex.getClass().getCanonicalName();
             stackTrace = new ArrayList<>();
             for (StackTraceElement stackTraceElement : ex.getStackTrace()) {

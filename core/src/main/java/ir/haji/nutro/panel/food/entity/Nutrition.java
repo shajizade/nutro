@@ -14,6 +14,7 @@ public class Nutrition implements Serializable {
     private Long id;
     private String name;
     private String code;
+    private Boolean main;
     @JoinColumn(name = "unitId")
     private Unit unit;
 
@@ -45,6 +46,13 @@ public class Nutrition implements Serializable {
         return unit;
     }
 
+    public Boolean getMain() {
+        return main;
+    }
+
+    public void setMain(Boolean main) {
+        this.main = main;
+    }
     public void setUnit(Unit unit) {
         this.unit = unit;
     }

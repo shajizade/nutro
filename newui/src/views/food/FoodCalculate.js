@@ -3,12 +3,13 @@ import {CCard, CInput, CCardBody, CCardHeader, CButton, CCol, CDataTable, CRow} 
 import SearchBox from "../../components/SearchBox";
 import foodApi from "../../api/foodApi";
 import useForm from "../../services/UseForm";
+import FoodNutritionTable from "../../components/FoodNutritionTable";
 
 
 const fields = [
   {
     key: 'name',
-    label: 'عنوان تحقیق'
+    label: 'غذا'
   },
   {
     key: 'amount',
@@ -21,22 +22,6 @@ const fields = [
 
   }
 ];
-const nutFields = [
-  {
-    key: 'name',
-    label: 'عنوان تحقیق'
-  },
-  {
-    key: 'amount',
-    label: 'مقدار'
-
-  },
-  {
-    key: 'unit',
-    label: 'واحد'
-
-  }
-];
 
 
 const FoodCalculate = () => {
@@ -46,11 +31,12 @@ const FoodCalculate = () => {
   const [foods,setFoods] = useState([]);
   const [nuts,setNuts] = useState([]);
   const former = useForm();
-  // eslint-disable-next-line
+
   useEffect(() => {
     foodSearcher.call().then((resp)=> {
       setOptions(resp.content);
     })
+    // eslint-disable-next-line
   }, []);
 
   const addFood = ()=> {
@@ -86,96 +72,84 @@ const FoodCalculate = () => {
           </CCardHeader>
           <CCardBody>
             <CRow>
-              <CCol xs="4" lg="4">
-                <SearchBox
-                  name="food"
-                  options={options}
-                  placeHolder="یک غذا انتخاب کنید"
-                  onChange={former.handle}
-                  fetch={fetchOptions}
-                />
+              <CCol xs="12" lg="6" style={{borderLeft: "1px solid"}}>
+                <CRow>
+                  <CCol xs="4" lg="4">
+                    <SearchBox
+                      name="food"
+                      options={options}
+                      placeHolder="یک غذا انتخاب کنید"
+                      onChange={former.handle}
+                      fetch={fetchOptions}
+                    />
+                  </CCol>
+                  <CCol xs="4" lg="4">
+                    <CInput type="number" placeholder="مقدار"
+                            name="amount"
+                            onChange={former.handle}/>
+                  </CCol>
+                  <CCol xs="4" lg="4">
+                    <CButton color="primary" className="px-4" onClick={addFood}>افزودن</CButton>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  <CDataTable
+                    items={foods}
+                    fields={fields}
+                    hover
+                    striped
+                    bordered
+                    size="sm"
+                    itemsPerPage={20}
+                    pagination
+                    scopedSlots={{
+                      'name': (item)=> (
+                        <td className="py-2">
+                          {item.food.name}
+                        </td>
+                      )
+                      , 'delete': (item)=> (
+                        <td className="py-2">
+                          <CButton
+                            color="primary"
+                            variant="outline"
+                            shape="square"
+                            size="sm"
+                            onClick={()=> {
+                              deleteFood(item);
+                            }}
+                          >
+                            حذف
+                          </CButton>
+                        </td>
+                      )
+                    }}
+                  />
+                </CRow>
               </CCol>
-              <CCol xs="4" lg="4">
-                <CInput type="number" placeholder="مقدار"
-                        name="amount"
-                        onChange={former.handle}/>
+              <CCol xs="12" lg="6">
+                <CRow>
+                  <CCol xs="6" lg="6">
+                    <CInput type="number" placeholder="وزن هر پرس"
+                            name="portionAmount"
+                            onChange={former.handle}/>
+                  </CCol>
+                  <CCol xs="6" lg="6">
+                    <CButton
+                      color="primary"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      onClick={calculate}
+                    >
+                      محاسبه
+                    </CButton>
+                  </CCol>
+                </CRow>
+                <CRow>
+                  {nuts && <FoodNutritionTable nutritions={nuts}/>}
+                </CRow>
               </CCol>
-              <CCol xs="4" lg="4">
-                <CButton color="primary" className="px-4" onClick={addFood}>افزودن</CButton>
-              </CCol>
-            </CRow>
-            <CRow>
-              <CDataTable
-                items={foods}
-                fields={fields}
-                hover
-                striped
-                bordered
-                size="sm"
-                itemsPerPage={20}
-                pagination
-                scopedSlots={{
-                  'name': (item)=> (
-                    <td className="py-2">
-                      {item.food.name}
-                    </td>
-                  )
-                  , 'delete': (item)=> (
-                    <td className="py-2">
-                      <CButton
-                        color="primary"
-                        variant="outline"
-                        shape="square"
-                        size="sm"
-                        onClick={()=> {
-                          deleteFood(item);
-                        }}
-                      >
-                        حذف
-                      </CButton>
-                    </td>
-                  )
-                }}
-              />
-            </CRow>
-            <CRow>
-              <CInput type="number" placeholder="وزن هر پرس"
-                      name="portionAmount"
-                      onChange={former.handle}/>
-
-              <CButton
-                color="primary"
-                variant="outline"
-                shape="square"
-                size="sm"
-                onClick={calculate}
-              >
-                محاسبه
-              </CButton>
-            </CRow>
-            <CRow>
-              {nuts && <CDataTable
-                items={nuts}
-                fields={nutFields}
-                hover
-                striped
-                bordered
-                size="sm"
-                itemsPerPage={200}
-                pagination
-                scopedSlots={{
-                  'name': (item)=> (
-                    <td className="py-2">
-                      {item.nutrition.name}
-                    </td>
-                  ),
-                  'unit': (item)=> (
-                    <td className="py-2">
-                      {item.nutrition.unit.name}
-                    </td>
-                  )
-                }}
-              />}
             </CRow>
           </CCardBody>
         </CCard>

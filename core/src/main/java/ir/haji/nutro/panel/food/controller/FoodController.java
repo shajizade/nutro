@@ -1,11 +1,7 @@
 package ir.haji.nutro.panel.food.controller;
 
 import ir.haji.nutro.dto.DataTypeObject;
-import ir.haji.nutro.panel.food.dto.NutritionFacts;
-import ir.haji.nutro.panel.food.entity.Food;
-import ir.haji.nutro.panel.food.entity.FoodSpec;
-import ir.haji.nutro.panel.food.entity.FullFood;
-import ir.haji.nutro.panel.food.entity.UnitUsage;
+import ir.haji.nutro.panel.food.entity.*;
 import ir.haji.nutro.panel.food.service.FoodService;
 import ir.haji.nutro.panel.um.predefined.AdminRole;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
@@ -30,6 +26,12 @@ public class FoodController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     private Page<Food> search(FoodSpec specification) {
         return foodService.searchFood(specification);
+    }
+
+    @RolesAllowed({AdminRole.NAME})
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    private Food createFood(@RequestBody Food food) {
+        return foodService.createFood(food);
     }
 
     @RolesAllowed({BasicRole.NAME})
@@ -57,14 +59,14 @@ public class FoodController {
     }
 
     @RolesAllowed({BasicRole.NAME})
-    @RequestMapping(value = "/{id}/ingredients", method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}/ingredients", method = RequestMethod.PUT)
     private void updateRecipe(@PathVariable Long id, @RequestBody List<DataTypeObject> foods) {
         foodService.updateRecipe(id, foods);
     }
 
     @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/{id}/ingredients", method = RequestMethod.GET)
-    private NutritionFacts getRecipe(@PathVariable Long id) {
+    private List<RecipeRow> getIngredients(@PathVariable Long id) {
         return foodService.getRecipeIngredients(id);
     }
 

@@ -1,10 +1,12 @@
 package ir.haji.nutro.panel.research;
 
+import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.exception.BadRequestException;
 import ir.haji.nutro.panel.food.dto.NutritionAmount;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
 import ir.haji.nutro.panel.food.entity.FoodNutrition;
 import ir.haji.nutro.panel.food.entity.FullFood;
+import ir.haji.nutro.panel.food.entity.Nutrition;
 import ir.haji.nutro.panel.food.service.FoodService;
 import ir.haji.nutro.panel.food.service.UnitService;
 import ir.haji.nutro.panel.research.entity.*;
@@ -15,15 +17,20 @@ import ir.haji.nutro.panel.research.repo.SimpleCaseDetailRepo;
 import ir.haji.nutro.panel.um.entity.User;
 import ir.haji.nutro.panel.um.predefined.AdminRole;
 import ir.haji.nutro.panel.um.service.UserService;
+import ir.haji.nutro.util.ExcelWorker;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Saeed on 1/16/2018.
@@ -206,5 +213,49 @@ public class ResearchService {
         getCaseOfResearch(id, caseId);
         List<CaseDetail> caseDetails = getCaseDetails(caseId);
         return caseDetails;
+    }
+
+    public List<DataTypeObject> getResearchFoods(Long id) {
+        Research research = getResearch(id);
+        List<Object[]> result = foodService.getFoodsArrayByResearchTypeId(research.getResearchType().getId());
+        return DataTypeObject.listConvert(result, "id", "name");
+    }
+
+
+    public byte[] getResearchExcel(Long id) throws IOException {
+        Page<Case> cases = getCases(id, new CaseSpec());
+        List<Nutrition> nutriotions = foodService.getAllNutriotions();
+        ExcelWorker excel = new ExcelWorker();
+        for (Case aCase : cases) {
+            excel.addSheet(aCase.getName());
+
+            XSSFCellStyle style = excel.getStyleMaker().bold().center().fontSize(20).getStyle();
+
+            excel.addRow()
+                    .setCellValue(aCase.getName(), style)
+                    .merge(0, 0, 0, 5);
+
+            excel.addRow()
+                    .setCellValue("ماده غذایی", null);
+            nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
+
+            List<CaseDetail> caseDetails = getCaseDetails(aCase.getId());
+            caseDetails.forEach(detail -> {
+                excel.addRow().setCellValue(detail.getFood().getFood().getName());
+                nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
+            });
+            excel.addRow().setCellValue("مجموع");
+            for (int col = 0; col < nutriotions.size(); col++) {
+                String columnAddress = ExcelWorker.getColumnAddress(col + 2);
+                excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")");
+            }
+        }
+
+        return excel.toByteArray();
+    }
+
+    private BigDecimal findNutAmount(CaseDetail detail, Nutrition nut) {
+        List<FoodNutrition> collect = detail.getFood().getNutritions().stream().filter(fn -> nut.getId().equals(fn.getNutrition().getId())).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0).getAmount();
     }
 }

@@ -16,7 +16,7 @@ const SearchBox = (props) => {
   // Use your imagination to render suggestions.
   const renderSuggestion = suggestion => (
     <div>
-      {suggestion.name + suggestion.id}
+      {suggestion.name + " | " + (suggestion.itemNumber ? suggestion.itemNumber : suggestion.id)}
     </div>
   );
 // Autosuggest will call this function every time you need to clear suggestions.
