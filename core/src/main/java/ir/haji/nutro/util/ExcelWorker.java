@@ -47,16 +47,15 @@ public class ExcelWorker {
     XSSFCellStyle defaultStyle = null;
 
     public ExcelWorker setCellValue(Object value) {
-
-        if (defaultStyle == null) {
-            defaultStyle = workbook.createCellStyle();
-            defaultStyle.setAlignment(HorizontalAlignment.CENTER);
-            defaultStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            defaultStyle.getFont().setBold(false);
-            defaultStyle.getFont().setFontHeight((short) (13 * 20));
-        }
-        setCellValue(value, defaultStyle);
+        setCellValue(value, getDefaultStyle());
         return this;
+    }
+
+    private XSSFCellStyle getDefaultStyle() {
+        if (defaultStyle == null) {
+            defaultStyle = getStyleMaker().center().fontSize(10).getStyle();
+        }
+        return defaultStyle;
     }
 
     public ExcelWorker setCellFormula(String formula) {
@@ -71,13 +70,16 @@ public class ExcelWorker {
 
     public ExcelWorker setCellValue(Object value, CellStyle style) {
         Cell cell = activeRow.createCell(columnIndex++);
-        if (style != null)
-            cell.setCellStyle(style);
+        if (style == null)
+            style = getDefaultStyle();
+        cell.setCellStyle(style);
 
         if (value == null) {
             cell.setCellValue("");
         } else if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
+        } else if (value instanceof Float) {
+            cell.setCellValue((Float) value);
         } else if (value instanceof Double) {
             cell.setCellValue((Double) value);
         } else if (value instanceof BigDecimal) {
@@ -105,7 +107,6 @@ public class ExcelWorker {
     public class StyleMaker {
 
         private XSSFCellStyle style = workbook.createCellStyle();
-        ;
 
         public StyleMaker center() {
             style.setAlignment(HorizontalAlignment.CENTER);

@@ -21,6 +21,9 @@ public class Doubler extends JsonSerializable.Base {
         this(0d);
     }
 
+    public Doubler(Float flt) {
+        this(flt.doubleValue());
+    }
     public Doubler(Double dub) {
         numberFormatter.setMaximumFractionDigits(2);
         numberFormatter.setGroupingUsed(false);

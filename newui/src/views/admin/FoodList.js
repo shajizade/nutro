@@ -40,9 +40,10 @@ const FoodList = (props) => {
     title: 'غذای جدید',
     body: ({handleOk})=><NewFoodForm history={props.history} handleOk={handleOk}></NewFoodForm>
   });
-  // eslint-disable-next-line
+
   useEffect(() => {
     foodGetter.call();
+    // eslint-disable-next-line
   }, []);
   return (
     <>

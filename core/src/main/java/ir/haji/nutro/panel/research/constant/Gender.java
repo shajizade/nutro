@@ -5,5 +5,7 @@ package ir.haji.nutro.panel.research.constant;
  */
 public enum Gender {
     MALE,
-    FEMALE
+    FEMALE,
+    PREG,
+    LACT
 }

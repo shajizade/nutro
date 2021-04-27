@@ -15,7 +15,16 @@ import javax.persistence.criteria.Root;
 public class CaseSpec extends SpecificationUtil implements Specification<Case> {
     String name;
     String code;
+    String status;
     Long researchId;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public String getDefaultSort() {
@@ -59,6 +68,10 @@ public class CaseSpec extends SpecificationUtil implements Specification<Case> {
         }
         if (code != null && !code.isEmpty()) {
             Predicate predicate = cb.like(root.get("code"), "%" + this.code + "%");
+            result = and(result, predicate, cb);
+        }
+        if (status != null && !status.isEmpty()) {
+            Predicate predicate = cb.equal(root.get("status"), this.status);
             result = and(result, predicate, cb);
         }
         return result;

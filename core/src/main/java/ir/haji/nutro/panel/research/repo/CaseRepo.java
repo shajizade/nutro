@@ -13,4 +13,6 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface CaseRepo extends PagingAndSortingRepository<Case, Long>, JpaSpecificationExecutor<Case> {
     List<Case> findByResearchId(Long id);
+
+    List<Case> findAllByResearchIdAndStatus(Long id, String statusAccepted);
 }

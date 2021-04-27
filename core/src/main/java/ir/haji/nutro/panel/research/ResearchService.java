@@ -17,6 +17,7 @@ import ir.haji.nutro.panel.research.repo.SimpleCaseDetailRepo;
 import ir.haji.nutro.panel.um.entity.User;
 import ir.haji.nutro.panel.um.predefined.AdminRole;
 import ir.haji.nutro.panel.um.service.UserService;
+import ir.haji.nutro.util.Doubler;
 import ir.haji.nutro.util.ExcelWorker;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.slf4j.Logger;
@@ -115,6 +116,10 @@ public class ResearchService {
         return result.get();
     }
 
+    public List<Case> getTotalAcceptedCases(Long id) {
+        checkAuthority(id);
+        return caseRepo.findAllByResearchIdAndStatus(id, Case.STATUS_ACCEPTED);
+    }
     public Page<Case> getCases(Long id, CaseSpec spec) {
         checkAuthority(id);
         spec.setResearchId(id);
@@ -138,6 +143,7 @@ public class ResearchService {
         caseInstance.setId(null);
         caseInstance.setResearchId(id);
         caseInstance.setRegisterDate(new Date());
+        caseInstance.setStatus(Case.STATUS_CREATED);
         return caseRepo.save(caseInstance);
     }
 
@@ -223,39 +229,89 @@ public class ResearchService {
 
 
     public byte[] getResearchExcel(Long id) throws IOException {
-        Page<Case> cases = getCases(id, new CaseSpec());
+        List<Case> cases = getTotalAcceptedCases(id);
+        if (cases == null || cases.size() == 0)
+            throw new BadRequestException("تحقیق شما هیچ موردی برای خروجی گرفتن ندارد");
         List<Nutrition> nutriotions = foodService.getAllNutriotions();
         ExcelWorker excel = new ExcelWorker();
+        fillExcelCasesSheet(excel, cases);
         for (Case aCase : cases) {
-            excel.addSheet(aCase.getName());
-
-            XSSFCellStyle style = excel.getStyleMaker().bold().center().fontSize(20).getStyle();
-
-            excel.addRow()
-                    .setCellValue(aCase.getName(), style)
-                    .merge(0, 0, 0, 5);
-
-            excel.addRow()
-                    .setCellValue("ماده غذایی", null);
-            nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
-
-            List<CaseDetail> caseDetails = getCaseDetails(aCase.getId());
-            caseDetails.forEach(detail -> {
-                excel.addRow().setCellValue(detail.getFood().getFood().getName());
-                nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
-            });
-            excel.addRow().setCellValue("مجموع");
-            for (int col = 0; col < nutriotions.size(); col++) {
-                String columnAddress = ExcelWorker.getColumnAddress(col + 2);
-                excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")");
-            }
+            fillExcelCaseSheet(nutriotions, excel, aCase);
         }
 
         return excel.toByteArray();
     }
 
+    private void fillExcelCaseSheet(List<Nutrition> nutriotions, ExcelWorker excel, Case aCase) {
+        excel.addSheet(aCase.getName());
+        XSSFCellStyle style = excel.getStyleMaker().bold().center().fontSize(10).getStyle();
+
+        excel.addRow()
+                .setCellValue(aCase.getName(), style)
+                .merge(0, 0, 0, 5);
+
+        excel.addRow()
+                .setCellValue("شناسه")
+                .setCellValue("شماره آیتم")
+                .setCellValue("منبع")
+                .setCellValue("ماده‌ی غذایی")
+                .setCellValue("مقدار");
+
+        nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
+
+        List<CaseDetail> caseDetails = getCaseDetails(aCase.getId());
+        caseDetails.forEach(detail -> {
+            excel.addRow()
+                    .setCellValue(detail.getFood().getFood().getId())
+                    .setCellValue(detail.getFood().getFood().getItemNumber())
+                    .setCellValue(detail.getFood().getFood().getSource())
+                    .setCellValue(detail.getFood().getFood().getName())
+                    .setCellValue(detail.getAmount());
+            nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
+        });
+        excel.addRow().setCellValue("مجموع");
+        for (int col = 0; col < nutriotions.size(); col++) {
+            String columnAddress = ExcelWorker.getColumnAddress(col + 2);
+            excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")");
+        }
+    }
+
+    private void fillExcelCasesSheet(ExcelWorker excel, List<Case> cases) {
+        excel.addSheet("لیست موارد");
+        excel.addRow()
+                .setCellValue("کد")
+                .setCellValue("نام و نام خانوادگی")
+                .setCellValue("جنسیت")
+                .setCellValue("سن")
+                .setCellValue("قد")
+                .setCellValue("وزن")
+                .setCellValue("BMI")
+                .setCellValue("دور کمر")
+                .setCellValue("دور باسن")
+                .setCellValue("دور باسن به دور کمر")
+                .setCellValue("میزان فعالیت")
+                .setCellValue("بیماری");
+        cases.forEach(aCase -> {
+            excel.addRow()
+                    .setCellValue(aCase.getCode())
+                    .setCellValue(aCase.getName())
+                    .setCellValue(aCase.getGender())
+                    .setCellValue(aCase.getAge())
+                    .setCellValue(aCase.getHeight())
+                    .setCellValue(aCase.getWeight())
+                    .setCellValue(aCase.getBmi())
+                    .setCellValue(aCase.getWaist())
+                    .setCellValue(aCase.getHip())
+                    .setCellValue(aCase.getWaistToHip())
+                    .setCellValue(aCase.getActivity())
+                    .setCellValue(aCase.getSickness());
+        });
+    }
+
     private BigDecimal findNutAmount(CaseDetail detail, Nutrition nut) {
-        List<FoodNutrition> collect = detail.getFood().getNutritions().stream().filter(fn -> nut.getId().equals(fn.getNutrition().getId())).collect(Collectors.toList());
-        return collect.isEmpty() ? null : collect.get(0).getAmount();
+        List<FoodNutrition> collect = detail.getFood().getNutritions().stream()
+                .filter(fn -> nut.getId().equals(fn.getNutrition().getId()))
+                .collect(Collectors.toList());
+        return collect.isEmpty() ? null : new Doubler(detail.getAmount()).multiply(collect.get(0).getAmount()).toBigDecimal();
     }
 }

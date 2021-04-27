@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {CCard, CCardBody, CCardHeader, CCol, CDataTable, CRow, CButton} from "@coreui/react";
 import useFetch from "../../services/UseFetch";
+import {BASE_URL} from "../../const";
 
 
 const fields = [
@@ -25,9 +26,10 @@ const fields = [
 
 const ResearchList = () => {
   const r = useFetch({url: '/research'});
-  // eslint-disable-next-line
+
   useEffect(() => {
     r.call();
+    // eslint-disable-next-line
   }, []);
   return (
     <>
@@ -61,6 +63,17 @@ const ResearchList = () => {
                       }}
                     >
                       جزئیات
+                    </CButton>
+                    <CButton
+                      href={BASE_URL + "/research/" + item.id + "/excel"}
+                      color="primary"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      onClick={()=> {
+                      }}
+                    >
+                      اکسل
                     </CButton>
                   </td>
                 )

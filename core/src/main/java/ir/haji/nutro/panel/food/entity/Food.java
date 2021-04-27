@@ -15,6 +15,7 @@ public class Food implements Serializable {
     private Long id;
     private String name;
     private String description;
+    private String source;
     private Byte[] picture;
     private String abbreviation;
     private Long itemNumber;
@@ -93,5 +94,13 @@ public class Food implements Serializable {
 
     public void setRecipe(Boolean recepie) {
         isRecipe = recepie;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

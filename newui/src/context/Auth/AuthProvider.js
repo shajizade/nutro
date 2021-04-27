@@ -11,9 +11,9 @@ const AuthProvider = (props) => {
   const logoutApi = authApis.useLogoutApi({successMessage: null});
   //const history=useHistory();
   const [currentUser,setCurrentUser]= useStorage('currentUser', null);
-  // eslint-disable-next-line
   useEffect(() => {
     getUser();
+    // eslint-disable-next-line
   }, []);
   const getUser = () => {
     userApi.call()
