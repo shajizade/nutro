@@ -12,5 +12,9 @@ export default {
     url: '/research/{researchId}/case/{caseId}/detail',
     method: 'post', ...options
   }),
-  useAddCaseApi: (options) => useFetch({url: '/research/{researchId}/case/', method: 'post', ...options})
+  useAddCaseApi: (options) => useFetch({url: '/research/{researchId}/case/', method: 'post', ...options}),
+  useCaseToggleApi: (options) => useFetch({
+    url: '/research/{researchId}/case/{caseId}/toggle',
+    method: 'put', ...options
+  })
 }

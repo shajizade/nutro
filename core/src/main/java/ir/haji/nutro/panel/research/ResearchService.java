@@ -314,4 +314,13 @@ public class ResearchService {
                 .collect(Collectors.toList());
         return collect.isEmpty() ? null : new Doubler(detail.getAmount()).multiply(collect.get(0).getAmount()).toBigDecimal();
     }
+
+    public void toggleCase(Long id, Long caseId) {
+        checkAuthority(id);
+        Case caseById = getCaseById(caseId);
+        if (caseById.getResearchId().equals(id)) {
+            caseById.setStatus(Case.STATUS_CREATED.equals(caseById.getStatus()) ? Case.STATUS_ACCEPTED : Case.STATUS_CREATED);
+            caseRepo.save(caseById);
+        }
+    }
 }

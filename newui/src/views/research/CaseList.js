@@ -16,6 +16,10 @@ const fields = [
     label: 'نام'
   },
   {
+    key: 'status',
+    label: 'وضعیت'
+  },
+  {
     key: 'gender',
     label: 'جنسیت'
   },
@@ -33,14 +37,15 @@ const fields = [
 
 const CaseList = (props) => {
   //console.log('props',props.match.params);
-  const r = researchApi.useGetCaseesApi();
+  const casesGetter = researchApi.useGetCaseesApi();
+  const caseToggeler = researchApi.useCaseToggleApi();
   let {researchId} = useParams();
   const [showModal,Modal]=useModal({
     title: 'کیس جدید',
     body: ({handleOk})=><NewCaseForm history={props.history} handleOk={handleOk} researchId={researchId}></NewCaseForm>
   });
   useEffect(() => {
-    r.call({urlParams: {id: researchId}});
+    casesGetter.call({urlParams: {id: researchId}});
     // eslint-disable-next-line
   }, []);
   return (
@@ -62,13 +67,13 @@ const CaseList = (props) => {
           <CCardBody>
 
             <CDataTable
-              items={r.response && r.response.content}
+              items={casesGetter.response && casesGetter.response.content}
               fields={fields}
               hover
               striped
               bordered
               size="sm"
-              itemsPerPage={r.response ? r.response.pageable.pageSize : 1}
+              itemsPerPage={casesGetter.response ? casesGetter.response.pageable.pageSize : 1}
               pagination
               scopedSlots={{
                 'detail': (item)=> (
@@ -83,6 +88,24 @@ const CaseList = (props) => {
                       }}
                     >
                       جزئیات
+                    </CButton>
+                  </td>
+                ),
+                'status': (item)=> (
+                  <td className="py-2">
+                    <CButton
+                      href="#"
+                      color="primary"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      onClick={()=> {
+                        console.log(item);
+                        caseToggeler.call({urlParams: {researchId: item.researchId, caseId: item.id}})
+                          .then(setTimeout(()=>casesGetter.call({urlParams: {id: researchId}}), 500));
+                      }}
+                    >
+                      {item.status}
                     </CButton>
                   </td>
                 )

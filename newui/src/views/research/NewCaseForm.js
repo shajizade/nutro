@@ -5,7 +5,7 @@ import useForm from "../../services/UseForm";
 import Utils from "../../services/utils";
 
 const NewCaseForm = (props) => {
-  console.log(props);
+  const former = useForm();
   const caseCreator = ResearchApi.useAddCaseApi();
   let bmi = ()=> {
     if (former.values.weight && former.values.height)
@@ -21,9 +21,7 @@ const NewCaseForm = (props) => {
         ;
       }
     );
-  }
-  const former = useForm();
-  const Age = former.former(<CInput id="age" type="number" placeholder="مثلا 29" required/>);
+  };
   return (
     <>
     <CRow>
@@ -46,7 +44,7 @@ const NewCaseForm = (props) => {
               <CCol xs="12" sm="4">
                 <CFormGroup>
                   <CLabel htmlFor="age">سن</CLabel>
-                  <Age/>
+                  <CInput id="age" placeholder="مثلا 13" required onChange={former.handle}/>
                 </CFormGroup>
               </CCol>
               <CCol xs="12" sm="8">

@@ -64,6 +64,12 @@ public class ResearchController {
     }
 
     @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/{id}/case/{caseId}/toggle", method = RequestMethod.PUT)
+    private void toggleCase(@PathVariable Long id, @PathVariable Long caseId) {
+        researchService.toggleCase(id, caseId);
+    }
+
+    @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/{id}/case/{caseId}/detail", method = RequestMethod.GET)
     private List<CaseDetail> getCaseDetail(@PathVariable Long id, @PathVariable Long caseId) {
         return researchService.getCaseDetails(id, caseId);
