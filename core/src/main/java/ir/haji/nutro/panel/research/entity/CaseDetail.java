@@ -86,4 +86,11 @@ public class CaseDetail implements Serializable {
         this.days = days;
     }
 
+    @Transient
+    public Double getScale() {
+        if (unitUsage == null || unitUsage.getScale() == null)
+            return 1d;
+        return unitUsage.getScale();
+    }
+
 }

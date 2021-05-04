@@ -245,6 +245,7 @@ public class ResearchService {
     private void fillExcelCaseSheet(List<Nutrition> nutriotions, ExcelWorker excel, Case aCase) {
         excel.addSheet(aCase.getName());
         XSSFCellStyle style = excel.getStyleMaker().bold().center().fontSize(10).getStyle();
+        XSSFCellStyle sumStyle = excel.getStyleMaker().bold().center().fontSize(10).background(25, 100, 200).getStyle();
 
         excel.addRow()
                 .setCellValue(aCase.getName(), style)
@@ -255,7 +256,8 @@ public class ResearchService {
                 .setCellValue("شماره آیتم")
                 .setCellValue("منبع")
                 .setCellValue("ماده‌ی غذایی")
-                .setCellValue("مقدار");
+                .setCellValue("مقدار")
+                .setCellValue("واحد");
 
         nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
 
@@ -266,13 +268,21 @@ public class ResearchService {
                     .setCellValue(detail.getFood().getFood().getItemNumber())
                     .setCellValue(detail.getFood().getFood().getSource())
                     .setCellValue(detail.getFood().getFood().getName())
-                    .setCellValue(detail.getAmount());
+                    .setCellValue(detail.getAmount())
+                    .setCellValue(detail.getUnit().getName());
+
             nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
         });
-        excel.addRow().setCellValue("مجموع");
+
+        excel.addRow().setCellValue("مجموع", sumStyle)
+                .setCellValue("", sumStyle)
+                .setCellValue("", sumStyle)
+                .setCellValue("", sumStyle)
+                .setCellValue("", sumStyle)
+                .setCellValue("", sumStyle);
         for (int col = 0; col < nutriotions.size(); col++) {
-            String columnAddress = ExcelWorker.getColumnAddress(col + 2);
-            excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")");
+            String columnAddress = ExcelWorker.getColumnAddress(col + 7);
+            excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")", sumStyle);
         }
     }
 
@@ -312,7 +322,11 @@ public class ResearchService {
         List<FoodNutrition> collect = detail.getFood().getNutritions().stream()
                 .filter(fn -> nut.getId().equals(fn.getNutrition().getId()))
                 .collect(Collectors.toList());
-        return collect.isEmpty() ? null : new Doubler(detail.getAmount()).multiply(collect.get(0).getAmount()).toBigDecimal();
+        return collect.isEmpty() ? null :
+                new Doubler(detail.getAmount())
+                        .multiply(detail.getScale())
+                        .multiply(collect.get(0).getAmount())
+                        .toBigDecimal();
     }
 
     public void toggleCase(Long id, Long caseId) {

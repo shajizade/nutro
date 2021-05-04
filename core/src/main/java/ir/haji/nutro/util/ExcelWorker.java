@@ -3,6 +3,7 @@ package ir.haji.nutro.util;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -58,8 +59,9 @@ public class ExcelWorker {
         return defaultStyle;
     }
 
-    public ExcelWorker setCellFormula(String formula) {
+    public ExcelWorker setCellFormula(String formula, XSSFCellStyle style) {
         Cell cell = activeRow.createCell(columnIndex++);
+        setCellStyle(style, cell);
         if (formula == null) {
             cell.setCellValue("");
         } else {
@@ -70,9 +72,7 @@ public class ExcelWorker {
 
     public ExcelWorker setCellValue(Object value, CellStyle style) {
         Cell cell = activeRow.createCell(columnIndex++);
-        if (style == null)
-            style = getDefaultStyle();
-        cell.setCellStyle(style);
+        setCellStyle(style, cell);
 
         if (value == null) {
             cell.setCellValue("");
@@ -88,6 +88,12 @@ public class ExcelWorker {
             cell.setCellValue(value.toString());
         }
         return this;
+    }
+
+    private void setCellStyle(CellStyle style, Cell cell) {
+        if (style == null)
+            style = getDefaultStyle();
+        cell.setCellStyle(style);
     }
 
     public byte[] toByteArray() throws IOException {
@@ -124,17 +130,29 @@ public class ExcelWorker {
             return this;
         }
 
+        public StyleMaker background(int r, int g, int b) {
+
+            byte[] rgb = new byte[3];
+            rgb[0] = (byte) r;
+            rgb[1] = (byte) g;
+            rgb[2] = (byte) b;
+            style.setFillForegroundColor(new XSSFColor(rgb));
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            style.setFillBackgroundColor(new XSSFColor(rgb));
+            return this;
+        }
+
         public XSSFCellStyle getStyle() {
             return style;
         }
     }
 
-    private static String alphabet = "ABCDEFGHIJKLMNOPQRSTUIWXYZ";
+    private static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     public static String getColumnAddress(Integer index) {
         if (index <= 26)
             return alphabet.substring(index - 1, index);
-        Integer bigIndex = index / 26;
+        Integer bigIndex = (index - 1) / 26;
         index = index - (bigIndex * 26);
         index = index == 0 ? 26 : index;
         return getColumnAddress(bigIndex) + getColumnAddress(index);

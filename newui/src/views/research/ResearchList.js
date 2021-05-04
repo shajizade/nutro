@@ -73,7 +73,7 @@ const ResearchList = () => {
                       onClick={()=> {
                       }}
                     >
-                      اکسل
+                      ⬇️اکسل
                     </CButton>
                   </td>
                 )

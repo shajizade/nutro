@@ -4,6 +4,7 @@ import {CCard, CCardBody, CCardHeader, CCol, CDataTable, CRow, CButton} from "@c
 import researchApi from "../../api/researchApis";
 import useModal from "../../services/useModal";
 import NewCaseForm from "./NewCaseForm";
+import Translator from "../../services/Translator";
 
 
 const fields = [
@@ -105,7 +106,7 @@ const CaseList = (props) => {
                           .then(setTimeout(()=>casesGetter.call({urlParams: {id: researchId}}), 500));
                       }}
                     >
-                      {item.status}
+                      {Translator(item.status)}
                     </CButton>
                   </td>
                 )
