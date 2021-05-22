@@ -151,8 +151,8 @@ public class FoodService {
         return foodRepo.save(food);
     }
 
-    public List<Object[]> getFoodsArrayByResearchTypeId(Long researchTypeId) {
-        return foodRepo.getFoodsArray(researchTypeId);
+    public List<Food> getFoodsByResearchTypeId(Long researchTypeId) {
+        return foodRepo.getFoodsOfResearch(researchTypeId);
     }
 
     public List<Nutrition> getAllNutriotions() {

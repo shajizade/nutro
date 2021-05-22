@@ -1,9 +1,9 @@
 package ir.haji.nutro.panel.research;
 
-import ir.haji.nutro.dto.DataTypeObject;
 import ir.haji.nutro.exception.BadRequestException;
 import ir.haji.nutro.panel.food.dto.NutritionAmount;
 import ir.haji.nutro.panel.food.dto.NutritionFacts;
+import ir.haji.nutro.panel.food.entity.Food;
 import ir.haji.nutro.panel.food.entity.FoodNutrition;
 import ir.haji.nutro.panel.food.entity.FullFood;
 import ir.haji.nutro.panel.food.entity.Nutrition;
@@ -221,10 +221,9 @@ public class ResearchService {
         return caseDetails;
     }
 
-    public List<DataTypeObject> getResearchFoods(Long id) {
+    public List<Food> getResearchFoods(Long id) {
         Research research = getResearch(id);
-        List<Object[]> result = foodService.getFoodsArrayByResearchTypeId(research.getResearchType().getId());
-        return DataTypeObject.listConvert(result, "id", "name");
+        return foodService.getFoodsByResearchTypeId(research.getResearchType().getId());
     }
 
 
@@ -245,7 +244,7 @@ public class ResearchService {
     private void fillExcelCaseSheet(List<Nutrition> nutriotions, ExcelWorker excel, Case aCase) {
         excel.addSheet(aCase.getName());
         XSSFCellStyle style = excel.getStyleMaker().bold().center().fontSize(10).getStyle();
-        XSSFCellStyle sumStyle = excel.getStyleMaker().bold().center().fontSize(10).background(25, 100, 200).getStyle();
+        XSSFCellStyle sumStyle = excel.getStyleMaker().bold().center().fontSize(10).background(252, 251, 174).getStyle();
 
         excel.addRow()
                 .setCellValue(aCase.getName(), style)
@@ -256,8 +255,9 @@ public class ResearchService {
                 .setCellValue("شماره آیتم")
                 .setCellValue("منبع")
                 .setCellValue("ماده‌ی غذایی")
-                .setCellValue("مقدار")
-                .setCellValue("واحد");
+                .setCellValue("مقدار مصرف سالانه")
+                .setCellValue("واحد")
+                .setCellValue("وزن مصرف سالانه(گرم)");
 
         nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
 
@@ -268,8 +268,9 @@ public class ResearchService {
                     .setCellValue(detail.getFood().getFood().getItemNumber())
                     .setCellValue(detail.getFood().getFood().getSource())
                     .setCellValue(detail.getFood().getFood().getName())
-                    .setCellValue(detail.getAmount())
-                    .setCellValue(detail.getUnit().getName());
+                    .setCellValue(detail.getPerYearAmount())
+                    .setCellValue(detail.getUnit().getName())
+                    .setCellValue(new Doubler(detail.getPerYearAmount()).multiply(detail.getScale()).toDouble());
 
             nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
         });
@@ -280,7 +281,7 @@ public class ResearchService {
                 .setCellValue("", sumStyle)
                 .setCellValue("", sumStyle)
                 .setCellValue("", sumStyle);
-        for (int col = 0; col < nutriotions.size(); col++) {
+        for (int col = 0; col < nutriotions.size() + 1; col++) {
             String columnAddress = ExcelWorker.getColumnAddress(col + 7);
             excel.setCellFormula("sum(" + columnAddress + "3:" + columnAddress + (caseDetails.size() + 2) + ")", sumStyle);
         }
@@ -333,6 +334,11 @@ public class ResearchService {
         checkAuthority(id);
         Case caseById = getCaseById(caseId);
         if (caseById.getResearchId().equals(id)) {
+            if (Case.STATUS_CREATED.equals(caseById.getStatus())) {
+                List<CaseDetail> caseDetails = getCaseDetails(caseId);
+                if (caseDetails == null || caseDetails.size() == 0)
+                    throw new BadRequestException("نمی‌توانید یک کیس بدون مورد را تایید کنید");
+            }
             caseById.setStatus(Case.STATUS_CREATED.equals(caseById.getStatus()) ? Case.STATUS_ACCEPTED : Case.STATUS_CREATED);
             caseRepo.save(caseById);
         }

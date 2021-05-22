@@ -1,6 +1,6 @@
 package ir.haji.nutro.panel.research;
 
-import ir.haji.nutro.dto.DataTypeObject;
+import ir.haji.nutro.panel.food.entity.Food;
 import ir.haji.nutro.panel.research.entity.*;
 import ir.haji.nutro.panel.research.repo.CaseDetailRepo;
 import ir.haji.nutro.panel.um.predefined.BasicRole;
@@ -95,7 +95,7 @@ public class ResearchController {
 
     @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "/{id}/foods", method = RequestMethod.GET)
-    private List<DataTypeObject> getResearchFoods(@PathVariable Long id) {
+    private List<Food> getResearchFoods(@PathVariable Long id) {
         return researchService.getResearchFoods(id);
     }
 

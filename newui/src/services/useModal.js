@@ -12,30 +12,29 @@ const useModal = ({body: Body, title: Title}) => {
     setState({data: data, visible: true});
   };
 
-  const handleOk = () => {
+  const close = () => {
     setState({...state, visible: false});
   };
 
-  const handleCancel = () => {
-    setState({...state, visible: false});
-  };
 
 
   const render = () => (
     <CModal
       show={state.visible}
-      onClose={handleCancel}
+      onClose={close}
     >
       <CModalHeader closeButton>{typeof(Title).toString() == 'string' ? Title : <Title/>}</CModalHeader>
       <CModalBody>
-        <Body data={state.data} handleOk={handleOk}/>
+        <Body data={state.data} close={close}/>
       </CModalBody>
       <CModalFooter>
+        {/*
         <CButton color="primary" onClick={handleOk}>تایید</CButton>{' '}
         <CButton
           color="secondary"
           onClick={handleCancel}
         >بستن</CButton>
+         */}
       </CModalFooter>
     </CModal>
   );

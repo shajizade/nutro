@@ -1,7 +1,22 @@
-import React, {useEffect} from "react";
-import {CCard, CCardBody, CCardHeader, CCol, CDataTable, CRow, CButton} from "@coreui/react";
+import React, {useEffect, useRef, useState, useContext} from "react";
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCol,
+  CDataTable,
+  CRow,
+  CButton,
+  CToast,
+  CToastBody,
+  CToaster,
+  CToastHeader
+} from "@coreui/react";
 import useFetch from "../../services/UseFetch";
 import {BASE_URL} from "../../const";
+import JDate from "../../components/JDate";
+import useModal from "../../services/useModal";
+import NewResearchForm from "./NewResearchForm";
 
 
 const fields = [
@@ -24,13 +39,25 @@ const fields = [
   }
 ];
 
-const ResearchList = () => {
+const ResearchList = (props) => {
   const r = useFetch({url: '/research'});
 
   useEffect(() => {
     r.call();
+
     // eslint-disable-next-line
   }, []);
+  let refresh = ()=> {
+    r.call();
+  };
+  const [showModal,Modal]=useModal({
+    title: 'تحقیق جدید',
+    body: ({close})=><NewResearchForm history={props.history}
+                                      close={()=> {
+                                        refresh();
+                                        close();
+                                      }}></NewResearchForm>
+  });
   return (
     <>
     <CRow>
@@ -38,9 +65,18 @@ const ResearchList = () => {
         <CCard>
           <CCardHeader>
             لیست عنواین تحقیقاتی
+            <CButton
+              color="primary"
+              variant="outline"
+              shape="square"
+              size="sm"
+              onClick={showModal}
+              className="float-right"
+            >
+              افزودن
+            </CButton>
           </CCardHeader>
           <CCardBody>
-
             <CDataTable
               items={r && r.response && r.response.content}
               fields={fields}
@@ -51,6 +87,9 @@ const ResearchList = () => {
               itemsPerPage={r.response ? r.response.pageable.pageSize : 1}
               pagination
               scopedSlots={{
+                'createDate': (item)=> (<td className="py-2">
+                  <JDate date={item.createDate}></JDate>
+                </td>),
                 'detail': (item)=> (
                   <td className="py-2">
                     <CButton
@@ -59,6 +98,7 @@ const ResearchList = () => {
                       variant="outline"
                       shape="square"
                       size="sm"
+                      className="mx-1"
                       onClick={()=> {
                       }}
                     >
@@ -70,6 +110,7 @@ const ResearchList = () => {
                       variant="outline"
                       shape="square"
                       size="sm"
+                      className="mx-1"
                       onClick={()=> {
                       }}
                     >
@@ -83,6 +124,7 @@ const ResearchList = () => {
         </CCard>
       </CCol>
     </CRow>
+    <Modal/>
     </>
   )
 };

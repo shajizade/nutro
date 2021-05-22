@@ -1,14 +1,11 @@
 package ir.haji.nutro.exception;
 
-import ir.haji.nutro.CommonUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
-
-import java.beans.PropertyEditorSupport;
-import java.util.Date;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ControllerAdvice
@@ -16,38 +13,14 @@ class GlobalControllerExceptionHandler {
 
     @Value("${panel.debug:false}")
     Boolean debug;
-
-    @InitBinder
-    public void binder(WebDataBinder binder) {
-        binder.registerCustomEditor(Date.class,
-                new PropertyEditorSupport() {
-                    public void setAsText(String value) {
-                        try {
-                            if (value == null || value.isEmpty() || !CommonUtil.isNumeric(value)) {
-                                setValue(null);
-                                return;
-                            }
-                            Long timestamp = CommonUtil.castToLong(value);
-                            if (timestamp < 0) {
-                                setValue(null);
-                                return;
-                            }
-                            Date parsedDate = new Date(timestamp);
-                            setValue(parsedDate);
-                        } catch (ParseException e) {
-                            setValue(null);
-                        }
-                    }
-                }
-        );
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
-    @ResponseBody
-    public ExceptionResponse badRequest(Exception ex) {
-        return new ExceptionResponse(ex, this.debug);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<DebugErrorResponse> exception(Exception e) {
+        DebugErrorResponse response = new DebugErrorResponse(e);
+        System.out.println(e.getClass().getCanonicalName() + " | " + response.effectiveLine("ir.haji"));
+        if (!debug)
+            response = new DebugErrorResponse(e.getMessage() == null ? "خطایی رخ داده است" : e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
 
 }

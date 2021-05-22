@@ -28,10 +28,6 @@ public class Food implements Serializable {
         return id;
     }
 
-    public List<UnitUsage> getUnitUsages() {
-        return unitUsages;
-    }
-
     public void setUnitUsages(List<UnitUsage> unitUsages) {
         this.unitUsages = unitUsages;
     }
@@ -102,5 +98,9 @@ public class Food implements Serializable {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public List<UnitUsage> getUnitUsages() {
+        return unitUsages;
     }
 }

@@ -93,4 +93,17 @@ public class CaseDetail implements Serializable {
         return unitUsage.getScale();
     }
 
+    @Transient
+    public Double getPerDayAmount() {
+        if (getAmount() == null)
+            return null;
+        if (getDays() == null)
+            return getAmount();
+        return getAmount() / getDays();
+    }
+
+    @Transient
+    public Double getPerYearAmount() {
+        return (getPerDayAmount() != null ? getPerDayAmount() * 365 : null);
+    }
 }

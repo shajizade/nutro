@@ -1,5 +1,6 @@
-import {useState} from "react";
+import {useState, useContext} from "react";
 import {BASE_URL} from "../const";
+import {AlertContext} from "../context/AlertProvider";
 const defaultOptions = {method: 'get', contentType: 'application/json'};
 function BadRequest(response) {
   this.response = response;
@@ -20,6 +21,8 @@ const queryParamSerializer = function (obj, prefix) {
 }
 const useFetch = (options)=> {
   options = {...defaultOptions, ...options};
+  const alert = useContext(AlertContext)
+
   const [state, setState] = useState({
     response: null,
     error: false,
@@ -79,12 +82,14 @@ const useFetch = (options)=> {
         }
       )
       .then(resp => {
-        console.log("fetch", resp);
+        if (finalOptions.method != 'get' && !finalOptions.muteNotification)
+          alert.addToast('عملیات با موفقیت انجام شد');
         setState({response: resp, loading: false, error: false});
         return resp;
       })
       .catch(ex => {
-        console.error('usefetach exceptionsetState', ex);
+        if (!finalOptions.muteNotification)
+          ex.response.json().then(resp=>alert.addToast(resp.message, 'خطا', 'warning'))
         setState({response: ex, loading: false, error: true});
         throw ex;
       });

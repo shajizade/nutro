@@ -5,6 +5,8 @@ import researchApi from "../../api/researchApis";
 import useModal from "../../services/useModal";
 import NewCaseForm from "./NewCaseForm";
 import Translator from "../../services/Translator";
+import JDate from "../../components/JDate";
+import Gender from "../../components/Gender";
 
 
 const fields = [
@@ -41,12 +43,19 @@ const CaseList = (props) => {
   const casesGetter = researchApi.useGetCaseesApi();
   const caseToggeler = researchApi.useCaseToggleApi();
   let {researchId} = useParams();
+
+  function refresh() {
+    casesGetter.call({urlParams: {id: researchId}});
+  }
   const [showModal,Modal]=useModal({
     title: 'کیس جدید',
-    body: ({handleOk})=><NewCaseForm history={props.history} handleOk={handleOk} researchId={researchId}></NewCaseForm>
+    body: ({close})=><NewCaseForm history={props.history} handleOk={()=> {
+      close();
+      refresh();
+    }} researchId={researchId}></NewCaseForm>
   });
   useEffect(() => {
-    casesGetter.call({urlParams: {id: researchId}});
+    refresh();
     // eslint-disable-next-line
   }, []);
   return (
@@ -62,6 +71,7 @@ const CaseList = (props) => {
               shape="square"
               size="sm"
               onClick={showModal}
+              className="float-right"
             >
               افزودن
             </CButton> </CCardHeader>
@@ -77,6 +87,12 @@ const CaseList = (props) => {
               itemsPerPage={casesGetter.response ? casesGetter.response.pageable.pageSize : 1}
               pagination
               scopedSlots={{
+                'registerDate': (item)=> (<td className="py-2">
+                  <JDate date={item.registerDate}></JDate>
+                </td>),
+                'gender': (item)=> (<td className="py-2">
+                  <Gender gender={item.gender}></Gender>
+                </td>),
                 'detail': (item)=> (
                   <td className="py-2">
                     <CButton

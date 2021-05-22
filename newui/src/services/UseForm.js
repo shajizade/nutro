@@ -17,7 +17,13 @@ const useForm = ()=> {
   const validate = ()=> {
     return true;
   }
-  return {handle, values: state.values, validate: validate, former: former}
+  const setDefault = (defaultValues)=> {
+    setState({
+      values: defaultValues
+    });
+
+  }
+  return {handle, values: state.values, validate: validate, former: former, setDefault: setDefault};
 }
 export default useForm;
 

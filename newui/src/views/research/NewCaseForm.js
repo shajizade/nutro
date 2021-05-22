@@ -125,8 +125,10 @@ const NewCaseForm = (props) => {
         </CCard>
       </CCol>
     </CRow>
-    <CRow>
-      <CButton color="primary" className="px-4 pull-left" onClick={createCase}>ثبت</CButton>
+    <CRow >
+      <CCol xs="12" sm="12">
+        <CButton color="primary" className="px-4 float-right" onClick={createCase}>ثبت</CButton>
+      </CCol>
     </CRow>
     </>
   )

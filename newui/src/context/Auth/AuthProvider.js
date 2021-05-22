@@ -1,11 +1,12 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useContext} from "react";
 import authApis from "../../api/authApis";
 import useStorage from "../../services/UseStorage";
+import {AlertContext} from "../../context/AlertProvider";
 
 export const AuthContext = React.createContext();
 
 const AuthProvider = (props) => {
-
+  const alert = useContext(AlertContext);
   const loginApi = authApis.useLoginApi({showSuccessMessage: false, shouldLogout: false, showError: false});
   const userApi = authApis.useUserApi({showError: false, initialLoading: true});
   const logoutApi = authApis.useLogoutApi({successMessage: null});
@@ -30,6 +31,8 @@ const AuthProvider = (props) => {
     return loginApi.call({body: user})
       .then((resp)=> {
         setCurrentUser(resp);
+      }).catch(ex=> {
+        alert.addToast('گذرنامه یا نام کاربری به درستی وارد نشده است', 'خطا', 'warning');
       });
   };
 

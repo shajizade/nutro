@@ -2,6 +2,7 @@ import useFetch from "../services/UseFetch";
 
 export default {
   useGetResearchesApi: (options) => useFetch({url: `/research`, method: 'get', ...options}),
+  useCreateResearchApi: (options) => useFetch({url: `/research`, method: 'post', ...options}),
   useGetCaseesApi: (options) => useFetch({url: '/research/{id}/case', method: 'get', ...options}),
   useGetResearchFoodsApi: (options) => useFetch({url: '/research/{id}/foods', method: 'get', ...options}),
   useGetCaseDetailApi: (options) => useFetch({

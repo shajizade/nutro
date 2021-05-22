@@ -1,4 +1,9 @@
 server:
+  error:
+    include-message: always
+    include-exception: true
+    include-binding-errors: always
+    include-stacktrace: always
   port: 9091
   session-timeout: 360000000
   servlet:

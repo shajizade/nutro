@@ -15,8 +15,17 @@ public class UnitUsage implements Serializable {
     private Long unitId;
     private Long foodId;
     private Double scale;
-
+    @JoinColumn(name = "unitId", insertable = false, updatable = false)
+    private Unit unit;
     public UnitUsage() {
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
     public UnitUsage(Long foodId, Long unitId, Double scale) {
@@ -56,4 +65,5 @@ public class UnitUsage implements Serializable {
     public void setScale(Double scale) {
         this.scale = scale;
     }
+
 }
