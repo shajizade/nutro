@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {CCard, CButton, CCardBody, CFormGroup, CLabel, CInput, CCol, CRow, CSelect} from "@coreui/react";
 import ResearchApi from "../../api/researchApis";
 import useForm from "../../services/UseForm";
@@ -6,8 +6,18 @@ import useForm from "../../services/UseForm";
 const NewResearchForm = (props) => {
   const former = useForm();
   const researchCreator = ResearchApi.useCreateResearchApi();
+  const researchTypeGetter = ResearchApi.useGetResearchTypes();
+  const [types,setTypes]=useState([]);
+  useEffect(() => {
+    researchTypeGetter.call()
+      .then((resp)=>setTypes(resp));
+    // eslint-disable-next-line
+  }, []);
+
   const createResearch = ()=> {
-    researchCreator.call({body: former.values}).then(
+    var research = Object.assign({}, former.values);
+    research['researchType'] = {id: former.values['researchType']};
+    researchCreator.call({body: research}).then(
       (resp)=> {
         if (props.handleOk) props.handleOk()
       }
@@ -28,11 +38,11 @@ const NewResearchForm = (props) => {
               </CCol>
               <CCol xs="12" sm="8">
                 <CFormGroup>
-                  <CLabel htmlFor="gender">نوع تحقیق</CLabel>
-                  <CSelect custom name="gender" id="gender" onChange={former.handle}>
-                    <option value=""></option>
-                    <option value="fqm">fqm</option>
-                    <option value="24hours">۲۴ ساعته</option>
+                  <CLabel htmlFor="researchType">نوع تحقیق</CLabel>
+                  <CSelect custom name="researchType" id="researchType" onChange={former.handle}>
+                    {types.map(type=>
+                      <option value={type.id}>{type.title}</option>
+                    )}
                   </CSelect>
                 </CFormGroup>
               </CCol>

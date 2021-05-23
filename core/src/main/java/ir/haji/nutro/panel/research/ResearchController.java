@@ -34,6 +34,12 @@ public class ResearchController {
     }
 
     @RolesAllowed({BasicRole.NAME})
+    @RequestMapping(value = "/type", method = RequestMethod.GET)
+    private List<ResearchType> getResearchTypes() {
+        return researchService.getAllResearchTypes();
+    }
+
+    @RolesAllowed({BasicRole.NAME})
     @RequestMapping(value = "", method = RequestMethod.POST)
     private Research createResearch(@RequestBody Research research) {
         return researchService.createResearch(research);

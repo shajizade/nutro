@@ -95,6 +95,8 @@ public class ResearchService {
     public Research createResearch(Research research) {
         if (research.getName() == null || research.getName().isEmpty())
             throw new BadRequestException("نام مطالعه نمی‌تواند خالی باشد");
+        if (research.getResearchType() == null || research.getResearchType().getId() == null)
+            throw new BadRequestException("نوع مطالعه نمی‌تواند خالی باشد");
         research.setId(null);
         research.setUserId(userService.getCurrentUser().getId());
         research.setCreateDate(new Date());
@@ -342,5 +344,9 @@ public class ResearchService {
             caseById.setStatus(Case.STATUS_CREATED.equals(caseById.getStatus()) ? Case.STATUS_ACCEPTED : Case.STATUS_CREATED);
             caseRepo.save(caseById);
         }
+    }
+
+    public List<ResearchType> getAllResearchTypes() {
+        return researchRepo.getAllResearchTypes();
     }
 }

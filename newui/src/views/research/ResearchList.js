@@ -53,9 +53,9 @@ const ResearchList = (props) => {
   const [showModal,Modal]=useModal({
     title: 'تحقیق جدید',
     body: ({close})=><NewResearchForm history={props.history}
-                                      close={()=> {
-                                        refresh();
+                                      handleOk={()=> {
                                         close();
+                                        refresh();
                                       }}></NewResearchForm>
   });
   return (
