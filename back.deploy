@@ -1,0 +1,20 @@
+echo start
+cd ~/src/nutro/core
+git stash
+git pull
+git stash pop
+chmod +x ./gradlew
+output=`./gradlew clean distZip`
+if [ $? -eq 0 ]; then
+        echo "build finished"
+        cd ~/src/nutro/core/build/distributions
+        unzip core-1.0.0.zip
+        cd core-1.0.0
+        cp -r ./* ~/deploy/back/
+        echo "copied"
+        echo "restarting"
+        docker restart back
+        docker logs --tail 100 -f back
+else
+        echo "build failed"
+fi

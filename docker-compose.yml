@@ -6,7 +6,7 @@ services:
     #    restart: always
     command: /data/bin/core
     volumes:
-      - ~/deploy/core:/data
+      - ~/deploy/back:/data
     depends_on:
       - db
     links:
