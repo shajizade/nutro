@@ -13,4 +13,6 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface NutritionRepo extends PagingAndSortingRepository<Nutrition, Long>, JpaSpecificationExecutor<Nutrition> {
     List<Nutrition> findAll();
+
+    Nutrition findByCode(String cell);
 }

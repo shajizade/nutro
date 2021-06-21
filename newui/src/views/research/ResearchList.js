@@ -29,6 +29,10 @@ const fields = [
     label: 'عنوان تحقیق'
   },
   {
+    key: 'researchType',
+    label: 'نوع تحقیق'
+  },
+  {
     key: 'createDate',
     label: 'تاریخ آغاز'
   },
@@ -87,6 +91,9 @@ const ResearchList = (props) => {
               itemsPerPage={r.response ? r.response.pageable.pageSize : 1}
               pagination
               scopedSlots={{
+                'researchType': (item)=> (<td className="py-2">
+                  {item.researchType && item.researchType.title}
+                </td>),
                 'createDate': (item)=> (<td className="py-2">
                   <JDate date={item.createDate}></JDate>
                 </td>),

@@ -23,4 +23,6 @@ public interface FoodRepo extends PagingAndSortingRepository<Food, Long>, JpaSpe
             "from Food f ,ResearchTypeFood rtf " +
             "where rtf.foodId=f.id and rtf.researchTypeId= :researchTypeId ")
     List<Food> getFoodsOfResearch(@Param("researchTypeId") Long researchTypeId);
+
+    Food findByItemNumber(String cell);
 }

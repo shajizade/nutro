@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Created by Saeed on 1/16/2018.
@@ -157,5 +156,36 @@ public class FoodService {
 
     public List<Nutrition> getAllNutriotions() {
         return nutritionRepo.findAll();
+    }
+
+    public void importFoods(String data) {
+        String[] lines = data.replace("\r\n", "\n").replace("\r", "\n").split("\n");
+        Boolean firstLine = true;
+        List<Nutrition> nutritions = new ArrayList<>();
+        for (String line : lines) {
+            String[] cells = line.split("\t");
+            if (firstLine) {
+                Arrays.stream(cells).forEach(cell -> {
+                    if (!Objects.equals(cell, "Item#")) {
+                        Nutrition nutrition = nutritionRepo.findByCode(getNutritionCode(cell));
+                        nutritions.add(nutrition);
+                    }
+                });
+                firstLine = false;
+            } else {
+                Food food = foodRepo.findByItemNumber(cells[0]);
+                IntStream.range(1, cells.length).forEach(index -> {
+                    if (nutritions.get(index - 1) != null) {
+                        String cell = cells[index];
+                        Long cellValue = CommonUtil.parseLong(cell);
+                        //food.
+                    }
+                });
+            }
+        }
+    }
+
+    private String getNutritionCode(String cell) {
+        return String.join("-", Arrays.copyOfRange(cell.split("-"), 0, cell.split("-").length - 1));
     }
 }

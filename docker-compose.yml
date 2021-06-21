@@ -1,0 +1,44 @@
+version: "3.0"
+services:
+  backend:
+    image: java:8-jre
+    container_name: backend
+    #    restart: always
+    command: /data/bin/core
+    volumes:
+      - ~/deploy/core:/data
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 9090
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    depends_on:
+      - backend
+    links:
+      - backend
+    volumes:
+      - ~/deploy/nginx:/etc/nginx/conf.d
+      - ~/deploy/ui:/var/nginx/www
+    ports:
+      - 80:80
+      - 443:443
+  db:
+    image: mysql:latest
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_USER: "saeed"
+      MYSQL_PASSWORD: "815454654561321321hjdf"
+      MYSQL_ROOT_PASSWORD: "815454654561321321hjdf"
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3366:3306'
+    volumes:
+      - ~/deploy/database:/var/lib/mysql

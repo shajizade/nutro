@@ -70,4 +70,10 @@ public class FoodController {
         return foodService.getRecipeIngredients(id);
     }
 
+    @RolesAllowed({AdminRole.NAME})
+    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    private void importFood(@RequestBody String data) {
+        foodService.importFoods(data);
+    }
+
 }

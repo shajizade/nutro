@@ -257,9 +257,9 @@ public class ResearchService {
                 .setCellValue("شماره آیتم")
                 .setCellValue("منبع")
                 .setCellValue("ماده‌ی غذایی")
-                .setCellValue("مقدار مصرف سالانه")
+                .setCellValue("مقدار مصرف روزانه")
                 .setCellValue("واحد")
-                .setCellValue("وزن مصرف سالانه(گرم)");
+                .setCellValue("وزن مصرف روزانه(گرم)");
 
         nutriotions.forEach(nut -> excel.setCellValue(nut.getName()));
 
@@ -270,9 +270,9 @@ public class ResearchService {
                     .setCellValue(detail.getFood().getFood().getItemNumber())
                     .setCellValue(detail.getFood().getFood().getSource())
                     .setCellValue(detail.getFood().getFood().getName())
-                    .setCellValue(detail.getPerYearAmount())
+                    .setCellValue(detail.getPerDayAmount())
                     .setCellValue(detail.getUnit().getName())
-                    .setCellValue(new Doubler(detail.getPerYearAmount()).multiply(detail.getScale()).toDouble());
+                    .setCellValue(new Doubler(detail.getPerDayAmount()).multiply(detail.getScale()).toDouble());
 
             nutriotions.forEach(nut -> excel.setCellValue(findNutAmount(detail, nut)));
         });
