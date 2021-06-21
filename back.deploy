@@ -13,8 +13,8 @@ if [ $? -eq 0 ]; then
         cp -r ./* ~/deploy/back/
         echo "copied"
         echo "restarting"
-        docker restart back
-        docker logs --tail 100 -f back
+        sudo docker restart back
+        sudo docker logs --tail 100 -f back
 else
         echo "build failed"
 fi
