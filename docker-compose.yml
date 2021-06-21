@@ -33,7 +33,7 @@ services:
     image: mysql:latest
     container_name: db
     restart: always
-    command: mysqld
+    command: docker-entrypoint.sh mysqld
     environment:
       MYSQL_USER: "saeed"
       MYSQL_PASSWORD: "815454654561321321hjdf"
