@@ -8,8 +8,8 @@ output=`./gradlew core:clean core:distZip`
 if [ $? -eq 0 ]; then
         echo "build finished"
         cd ~/src/nutro/core/build/distributions
-        unzip core-1.0.0.zip
-        cd core-1.0.0
+        unzip core-1.0.0-SNAPSHOT.zip
+        cd core-1.0.0-SNAPSHOT
         cp -r ./* ~/deploy/back/
         echo "copied"
         echo "restarting"
