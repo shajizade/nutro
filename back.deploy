@@ -1,10 +1,10 @@
 echo start
-cd ~/src/nutro/core
+cd ~/src/nutro/
 git stash
 git pull
 git stash pop
 chmod +x ./gradlew
-output=`./gradlew clean distZip`
+output=`./gradlew core:clean core:distZip`
 if [ $? -eq 0 ]; then
         echo "build finished"
         cd ~/src/nutro/core/build/distributions
