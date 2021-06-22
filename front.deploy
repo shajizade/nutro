@@ -1,0 +1,33 @@
+echo start
+node --version
+cd ~/src/nutro/newui
+git stash
+git pull
+git stash pop
+cp ../default.conf ~/deploy/nginx/
+DIR=~/src/nutro/newui/dist
+if [ -d "$DIR" ]; then
+    printf '%s\n' "Removing ($DIR)"
+    rm -rf "$DIR"
+fi
+#DIR=~/src/nutro/newui/node_modules
+#if [ -d "$DIR" ]; then
+#    printf '%s\n' "Removing ($DIR)"
+#    rm -rf "$DIR"
+#fi
+#echo "installing node modules ..."
+npm i
+output=`npm run build_prod --verbos`
+if [ $? -eq 0 ]; then
+        echo "build finished"
+        cd ~/deploy/ui
+        rm -rf **
+        cp -r ~/src/nutro/newui/dist/ui/** .
+        echo "built content copied"
+        ls | grep index.html
+        docker restart nginx
+else
+        echo "build failed"
+fi
+#echo "removing dependencies"
+#rm -rf ~/src/members-tree/ui/node_modules
