@@ -14,7 +14,7 @@ services:
     environment:
       - NODE_ENV=production
     ports:
-      - 9090
+      - 9091
   nginx:
     image: nginx:latest
     container_name: nginx
