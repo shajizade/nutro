@@ -22,7 +22,7 @@ if [ $? -eq 0 ]; then
         echo "build finished"
         cd ~/deploy/ui
         rm -rf **
-        cp -r ~/src/nutro/newui/dist/ui/** .
+        cp -r ~/src/nutro/newui/build/* .
         echo "built content copied"
         ls | grep index.html
         docker restart nginx
