@@ -1,5 +1,46 @@
 import React from "react";
+import Toaster from "./views/notifications/toaster/Toaster";
+import Tables from "./views/base/tables/Tables";
+import Breadcrumbs from "./views/base/breadcrumbs/Breadcrumbs";
+import Cards from "./views/base/cards/Cards";
+import Carousels from "./views/base/carousels/Carousels";
+import Collapses from "./views/base/collapses/Collapses";
+import BasicForms from "./views/base/forms/BasicForms";
+import Jumbotrons from "./views/base/jumbotrons/Jumbotrons";
+import ListGroups from "./views/base/list-groups/ListGroups";
+import Navbars from "./views/base/navbars/Navbars";
+import Navs from "./views/base/navs/Navs";
+import Paginations from "./views/base/paginations/Pagnations";
+import Popovers from "./views/base/popovers/Popovers";
+import ProgressBar from "./views/base/progress-bar/ProgressBar";
+import Switches from "./views/base/switches/Switches";
+import Tabs from "./views/base/tabs/Tabs";
+import Tooltips from "./views/base/tooltips/Tooltips";
+import BrandButtons from "./views/buttons/brand-buttons/BrandButtons";
+import ButtonDropdowns from "./views/buttons/button-dropdowns/ButtonDropdowns";
+import ButtonGroups from "./views/buttons/button-groups/ButtonGroups";
+import Buttons from "./views/buttons/buttons/Buttons";
+import Charts from "./views/charts/Charts";
+import Dashboard from "./views/dashboard/Dashboard";
+import CoreUIIcons from "./views/icons/coreui-icons/CoreUIIcons";
+import Flags from "./views/icons/flags/Flags";
+import Brands from "./views/icons/brands/Brands";
+import Alerts from "./views/notifications/alerts/Alerts";
+import Badges from "./views/notifications/badges/Badges";
+import Modals from "./views/notifications/modals/Modals";
+import Colors from "./views/theme/colors/Colors";
+import Typography from "./views/theme/typography/Typography";
+import Widgets from "./views/widgets/Widgets";
+import Users from "./views/users/Users";
+import User from "./views/users/User";
+import FoodCalculate from "./views/food/FoodCalculate";
+import UpdateRecipe from "./views/admin/UpdateRecipe";
+import ResearchList from "./views/research/ResearchList";
+import CaseList from "./views/research/CaseList";
+import CaseDetail from "./views/research/CaseDetail";
+import FoodList from "./views/admin/FoodList";
 
+/*
 const Toaster = React.lazy(() =>
   ('./views/notifications/toaster/Toaster'));
 const Tables = React.lazy(() =>
@@ -84,6 +125,7 @@ const CaseDetail = React.lazy(() =>
   ('./views/research/CaseDetail'));
 const FoodList = React.lazy(() =>
   ('./views/admin/FoodList'));
+ */
 
 
 const routes = [
