@@ -2,7 +2,7 @@ import React from "react";
 import {TheContent, TheSidebar, TheFooter, TheHeader} from "./index";
 
 const TheLayout = () => {
-
+  console.log('layout');
   return (
     <div className="c-app c-default-layout">
       <TheSidebar/>
@@ -15,6 +15,6 @@ const TheLayout = () => {
       </div>
     </div>
   )
-}
+};
 
 export default TheLayout

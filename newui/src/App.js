@@ -1,5 +1,10 @@
 import React, {Component} from "react";
 import {HashRouter, Route, Switch} from "react-router-dom";
+import TheLayout from "./containers/TheLayout";
+import Login from "./views/pages/login/Login";
+import Register from "./views/pages/register/Register";
+import Page404 from "./views/pages/page404/Page404";
+import Page500 from "./views/pages/page500/Page500";
 import "./scss/style.scss";
 
 const loading = (
@@ -9,10 +14,10 @@ const loading = (
 )
 
 // Containers
-const TheLayout = React.lazy(() =>
-  ('./containers/TheLayout'));
+/*const TheLayout = React.lazy(() =>  ('./containers/TheLayout'));*/
 
 // Pages
+/*
 const Login = React.lazy(() =>
   ('./views/pages/login/Login'));
 const Register = React.lazy(() =>
@@ -21,10 +26,12 @@ const Page404 = React.lazy(() =>
   ('./views/pages/page404/Page404'));
 const Page500 = React.lazy(() =>
   ('./views/pages/page500/Page500'));
+ */
 
 class App extends Component {
 
   render() {
+    console.log('app');
     return (
       <HashRouter>
         <React.Suspense fallback={loading}>

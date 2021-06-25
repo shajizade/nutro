@@ -82,7 +82,7 @@ const useFetch = (options)=> {
         }
       )
       .then(resp => {
-        if (finalOptions.method != 'get' && !finalOptions.muteNotification)
+        if (finalOptions.method !== 'get' && !finalOptions.muteNotification)
           alert.addToast('عملیات با موفقیت انجام شد');
         setState({response: resp, loading: false, error: false});
         return resp;

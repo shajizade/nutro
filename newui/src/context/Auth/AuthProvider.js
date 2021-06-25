@@ -63,7 +63,7 @@ const AuthProvider = (props) => {
   const hasRole = (role) => {
     return getAllRoles().includes(role.toUpperCase());
   };
-  console.log('auth', currentUser)
+  console.log('auth', currentUser);
   return (
     <AuthContext.Provider
       value={{

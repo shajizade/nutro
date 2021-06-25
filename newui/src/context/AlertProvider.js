@@ -1,18 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CDataTable,
-  CRow,
-  CButton,
-  CToast,
-  CToastBody,
-  CToaster,
-  CToastHeader,
-  CToastClose
-} from "@coreui/react";
+import React, {useState} from "react";
+import {CToast, CToastBody, CToaster, CToastHeader} from "@coreui/react";
 export const AlertContext = React.createContext();
 
 const AlertProvider = (props) => {

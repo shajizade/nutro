@@ -16,7 +16,7 @@ fi
 #    rm -rf "$DIR"
 #fi
 #echo "installing node modules ..."
-output=`npm run-script build`
+npm i
 #output=`npm run build_prod --verbos`
 if [ $? -eq 0 ]; then
         echo "build finished"
