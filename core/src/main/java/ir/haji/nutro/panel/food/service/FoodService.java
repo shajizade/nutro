@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -174,13 +175,28 @@ public class FoodService {
                 firstLine = false;
             } else {
                 Food food = foodRepo.findByItemNumber(cells[0]);
-                IntStream.range(1, cells.length).forEach(index -> {
-                    if (nutritions.get(index - 1) != null) {
-                        String cell = cells[index];
-                        Long cellValue = CommonUtil.parseLong(cell);
-                        //food.
-                    }
-                });
+                if (food != null) {
+                    foodNutritionRepo.deleteByFoodId(food.getId());
+                    List<FoodNutrition> foodNutritions = new ArrayList<>();
+                    IntStream.range(1, cells.length).forEach(index -> {
+                        Nutrition nutrition = nutritions.get(index - 1);
+                        if (nutrition != null) {
+                            String cell = cells[index];
+                            BigDecimal cellValue = new BigDecimal(0);
+                            try {
+                                cellValue = new BigDecimal(cell);
+                            } catch (Throwable ignored) {
+                            }
+                            FoodNutrition foodNutrition = new FoodNutrition();
+                            foodNutrition.setFoodId(food.getId());
+                            foodNutrition.setAmount(new Doubler(cellValue).divide(100).toBigDecimal());
+                            foodNutrition.setNutrition(nutrition);
+                            foodNutritions.add(foodNutrition);
+                        }
+                    });
+                    System.out.println("saving " + food.getId() + "food#Nut: " + foodNutritions.size());
+                    foodNutritionRepo.saveAll(foodNutritions);
+                }
             }
         }
     }
