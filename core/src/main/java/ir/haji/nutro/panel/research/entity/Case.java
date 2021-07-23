@@ -14,6 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "`case`")
 public class Case implements Serializable {
+    public static final long FREQUENCY_24_ID = 2l;
     public static String STATUS_CREATED = "CREATED";
     public static String STATUS_ACCEPTED = "ACCEPTED";
 
@@ -151,6 +152,7 @@ public class Case implements Serializable {
         this.status = status;
     }
 
+
     @Transient
     public Double getBmi() {
         if (height != null && height > 0 && waist != null && weight > 0)
@@ -158,6 +160,11 @@ public class Case implements Serializable {
                     new Doubler(height).multiply(height).divide(10000)
             ).toDouble();
         return null;
+    }
+
+    @Transient
+    public Boolean getFoodFree() {
+        return id.equals(FREQUENCY_24_ID);
     }
 
     @Transient

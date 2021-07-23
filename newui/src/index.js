@@ -9,7 +9,8 @@ import {icons} from "./assets/icons";
 import {Provider} from "react-redux";
 import store from "./store";
 import AuthProvider from "./context/Auth/AuthProvider";
-import AlertProvider from "./context/AlertProvider"; // For IE 11 support
+import AlertProvider from "./context/AlertProvider";
+import StorageProvider from "./context/Storage/StorageProvider";
 
 React.icons = icons
 
@@ -17,7 +18,9 @@ ReactDOM.render(
   <Provider store={store}>
     <AlertProvider>
       <AuthProvider>
-        <App/>
+        <StorageProvider>
+          <App/>
+        </StorageProvider>
       </AuthProvider>
     </AlertProvider>
   </Provider>,
