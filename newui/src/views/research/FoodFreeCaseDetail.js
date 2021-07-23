@@ -6,7 +6,6 @@ import useForm from "../../services/UseForm";
 import {DAYS} from "../../const";
 
 const FoodFreeCaseDetail = (props) => {
-  const foodsGetter = researchApi.useGetResearchFoodsApi();
   const detailGetter = researchApi.useGetCaseDetailApi();
   const detailUpdater = researchApi.useUpdateCaseDetailApi();
   const former = useForm();
@@ -58,7 +57,6 @@ const FoodFreeCaseDetail = (props) => {
   };
 
   useEffect(() => {
-    foodsGetter.call({urlParams: {id: researchId}}).then(resp=>setFoods(resp));
     detailGetter.call({urlParams: {researchId: researchId, caseId: caseId}}).then(resp=> {
       setDetails(resp);
       let defaultAmounts = resp.reduce(function (map, obj) {
@@ -70,6 +68,8 @@ const FoodFreeCaseDetail = (props) => {
         return map;
       }, {});
       former.setDefault({...defaultAmounts, ...defaultUnits});
+      setFoods(resp.map(item=>item.food.food));
+      //console.log('foods',resp);
     });
     // eslint-disable-next-line
   }, []);

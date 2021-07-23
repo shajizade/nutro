@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from "react";
-import {CButton, CModal, CModalHeader, CModalBody, CModalFooter} from "@coreui/react";
+import {CModal, CModalHeader, CModalBody, CModalFooter} from "@coreui/react";
 
 const useModal = ({body: Body, title: Title}) => {
 

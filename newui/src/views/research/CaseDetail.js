@@ -3,11 +3,12 @@ import {useParams} from "react-router-dom";
 import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect} from "@coreui/react";
 import SimpleCaseDetail from "./SimpleCaseDetail";
 import FoodFreeCaseDetail from "./FoodFreeCaseDetail";
+import {getParams} from "../../services/QueryString";
 
 
 const CaseDetail = (props) => {
-  let {foodFree} = useParams();
-  return (foodFree ?
+  let params = getParams(props);
+  return (params.foodFree ?
       <FoodFreeCaseDetail>
       </FoodFreeCaseDetail>
       :
