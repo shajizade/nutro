@@ -3,13 +3,16 @@ import React, {useState} from "react";
 const useForm = ()=> {
   const [state, setState] = useState({values: {}, fields: []});
   const handle = (e)=> {
-    setState({
+    var inputKey = e.target.name ? e.target.name : e.target.id;
+    var inputValue = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    var newState = {
       values: {
         ...state.values,
-        [e.target.name ? e.target.name : e.target.id]: e.target.type === 'checkbox' ? e.target.checked : e.target.value
+        [inputKey]: inputValue
       }
-
-    });
+    };
+    setState(newState);
+    return newState.values;
   };
   let former = (Component)=> {
     return (props)=><Component {...props} onChange={handle}/>;

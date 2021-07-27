@@ -14,7 +14,6 @@ import java.util.Date;
 @Entity
 @Table(name = "`case`")
 public class Case implements Serializable {
-    public static final long FREQUENCY_24_ID = 2l;
     public static String STATUS_CREATED = "CREATED";
     public static String STATUS_ACCEPTED = "ACCEPTED";
 
@@ -36,6 +35,9 @@ public class Case implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date registerDate;
     private String status;
+    @Transient
+    private Boolean foodFree;
+
     public String getHashCode() {
         return HashUtil.getCaseCode(id);
     }
@@ -162,9 +164,12 @@ public class Case implements Serializable {
         return null;
     }
 
-    @Transient
     public Boolean getFoodFree() {
-        return id.equals(FREQUENCY_24_ID);
+        return foodFree;
+    }
+
+    public void setFoodFree(Boolean foodFree) {
+        this.foodFree = foodFree;
     }
 
     @Transient

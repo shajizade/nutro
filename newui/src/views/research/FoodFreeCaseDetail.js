@@ -2,16 +2,30 @@ import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect} from "@coreui/react";
 import researchApi from "../../api/researchApis";
+import foodApi from "../../api/foodApi";
+import SearchBox from "../../components/SearchBox";
 import useForm from "../../services/UseForm";
 import {DAYS} from "../../const";
 
 const FoodFreeCaseDetail = (props) => {
+  console.log('FOOOOOOOOOOOOOOD FREEEEEEEEEEEEEEEE');
+  const foodSearcher = foodApi.useSearchFood();
   const detailGetter = researchApi.useGetCaseDetailApi();
   const detailUpdater = researchApi.useUpdateCaseDetailApi();
   const former = useForm();
   let {researchId, caseId} = useParams();
   let [foods, setFoods] = useState([]);
   let [details, setDetails] = useState([]);
+  const [foodOptions,setOptions] = useState([]);
+  const [unitOptions,setUnitOptions] = useState([]);
+
+  const fetchFoodOptions = ({value}) => {
+    foodSearcher.call({body: {name: value}})
+      .then((resp)=> {
+        setOptions(resp.content);
+      });
+  };
+
 
   const defaultAmount = function (details, foodId, days) {
     if (!details)
@@ -36,14 +50,22 @@ const FoodFreeCaseDetail = (props) => {
           , unitId: former.values[foodId + '_unit'] ? former.values[foodId + '_unit'] : 1
         }
       }).then();
-  }
+  };
+  const createCase = function (days) {
+    if (former.values['new_food'] && former.values['new_unit'])
+      detailUpdater.call({
+        urlParams: {researchId: researchId, caseId: caseId},
+        body: {
+          foodId: former.values['new_food'].id, amount: former.values['new_' + days], days: days
+          , unitId: former.values['new_unit'] ? former.values['new_unit'] : 1
+        }
+      }).then(()=>fetchData());
+  };
   const updateCaseUnit = function (foodId) {
     var days = Object.keys(DAYS).find(days=>former.values[foodId + '_' + days] > 0);
-    console.log(foodId, former.values, days);
     if (days)
       updateCase(foodId, days);
-  }
-
+  };
   const options = (details, unitUsages, food)=> {
     let result = [<option value="1">گرم</option>];
     if (unitUsages) {
@@ -55,8 +77,17 @@ const FoodFreeCaseDetail = (props) => {
     }
     return result;
   };
+  const newFoodOptions = (food)=> {
+    let result = [<option value="1">گرم</option>];
+    if (food && food.unitUsages) {
+      result.push(food.unitUsages.map((unitUsage) => {
+        return <option value={unitUsage.unit.id}>{unitUsage.unit.name}</option>;
+      }));
+    }
+    return result;
+  };
 
-  useEffect(() => {
+  let fetchData = ()=> {
     detailGetter.call({urlParams: {researchId: researchId, caseId: caseId}}).then(resp=> {
       setDetails(resp);
       let defaultAmounts = resp.reduce(function (map, obj) {
@@ -67,10 +98,14 @@ const FoodFreeCaseDetail = (props) => {
         map[obj.food.id + '_unit'] = obj.unit.id;
         return map;
       }, {});
-      former.setDefault({...defaultAmounts, ...defaultUnits});
+      former.setDefault({...defaultAmounts, ...defaultUnits, 'new_unit': 1});
       setFoods(resp.map(item=>item.food.food));
       //console.log('foods',resp);
     });
+  }
+
+  useEffect(() => {
+    fetchData();
     // eslint-disable-next-line
   }, []);
   return (
@@ -117,6 +152,37 @@ const FoodFreeCaseDetail = (props) => {
                 }
               </CRow>
             )}
+            <CRow>
+              <CCol xs="2" lg="2">
+                <SearchBox
+                  name="new_food"
+                  options={foodOptions}
+                  placeHolder="یک غذا انتخاب کنید"
+                  onChange={former.handle}
+                  fetch={fetchFoodOptions}
+                />
+              </CCol>
+              <CCol xs="2" lg="2">
+                <CSelect custom
+                         name={'new_unit'}
+                         id={'new_unit'}
+                         onChange={former.handle}
+                >
+                  {newFoodOptions(former.values['new_food'])}
+                </CSelect>
+              </CCol>
+              {
+                Object.keys(DAYS).map((days)=>
+                  <CCol xs="2" lg="2">
+                    <CInput type="number"
+                            name={'new_' + days}
+                            onBlur={()=>createCase(days)}
+                            onChange={former.handle}
+                    />
+                  </CCol>
+                )
+              }
+            </CRow>
           </CCardBody>
         </CCard>
       </CCol>

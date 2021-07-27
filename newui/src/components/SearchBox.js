@@ -26,10 +26,8 @@ const SearchBox = (props) => {
   const onChange = (event, {newValue}) => {
     setInnerValue(newValue);
     var item = getItemByValue(newValue);
-    console.log(newValue, item);
     if (item) {
       let e = {target: {name: props.name, value: item}};
-      console.log(e);
       props.onChange(e);
     }
   };

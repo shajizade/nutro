@@ -96,7 +96,7 @@ const CaseList = (props) => {
                 'detail': (item)=> (
                   <td className="py-2">
                     <CButton
-                      href={"#/research/" + researchId + "/case/" + item.id + "/detail?freeFood=" + item.foodFree}
+                      href={"#/research/" + researchId + "/case/" + item.id + "/detail?foodFree=" + item.foodFree}
                       color="primary"
                       variant="outline"
                       shape="square"

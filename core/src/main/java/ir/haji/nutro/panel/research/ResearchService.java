@@ -119,29 +119,32 @@ public class ResearchService {
     }
 
     public List<Case> getTotalAcceptedCases(Long id) {
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         return caseRepo.findAllByResearchIdAndStatus(id, Case.STATUS_ACCEPTED);
     }
     public Page<Case> getCases(Long id, CaseSpec spec) {
-        checkAuthority(id);
+        Research research = checkAuthorityAndReturnResearch(id);
         spec.setResearchId(id);
-        return caseRepo.findAll(spec, spec.getPageable());
+        Page<Case> cases = caseRepo.findAll(spec, spec.getPageable());
+        cases.forEach(aCase -> aCase.setFoodFree(research.getResearchType().getFoodFree()));
+        return cases;
     }
 
-    private void checkAuthority(Long id) {
+    private Research checkAuthorityAndReturnResearch(Long id) {
         User currentUser = userService.getCurrentUser();
+        Research research = getResearch(id);
         if (!currentUser.hasAuthority(AdminRole.CAPTION)) {
-            Research research = getResearch(id);
             if (!research.getUserId().equals(currentUser.getId()))
                 throw new BadRequestException("خطا");
         }
+        return research;
     }
 
     public Case addCaseToResearch(Long id, Case caseInstance) {
         if ((caseInstance.getName() == null || caseInstance.getName().isEmpty())
                 && (caseInstance.getCode() == null || caseInstance.getCode().isEmpty()))
             throw new BadRequestException("نام و کد همزمان نمی‌تواند خالی باشد");
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         caseInstance.setId(null);
         caseInstance.setResearchId(id);
         caseInstance.setRegisterDate(new Date());
@@ -150,7 +153,7 @@ public class ResearchService {
     }
 
     public void removeCaseFromResearch(Long id, Long caseId) {
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         Case caseById = getCaseOfResearch(id, caseId);
         List<CaseDetail> details = getCaseDetails(id);
         if (details.size() > 0)
@@ -185,7 +188,7 @@ public class ResearchService {
             throw new BadRequestException("دوره‌ی زمانی نادرست است");
         if (caseDetail.getUnitId() == null)
             throw new BadRequestException("واحد نمی‌تواند خالی باشد");
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         getCaseOfResearch(id, caseId);
         unitService.getUnitUsage(caseDetail.getFoodId(), caseDetail.getUnitId());
         removeCaseDetailByCaseIdAndFoodId(caseId, caseDetail.getFoodId());
@@ -200,7 +203,7 @@ public class ResearchService {
 
 
     public void removeDetailFromCase(Long id, Long caseId, Long detailId) {
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         getCaseOfResearch(id, caseId);
         CaseDetail caseDetail = getCaseDetailById(detailId);
         if (!caseDetail.getCaseId().equals(caseId))
@@ -217,7 +220,7 @@ public class ResearchService {
     }
 
     public List<CaseDetail> getCaseDetails(Long id, Long caseId) {
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         getCaseOfResearch(id, caseId);
         List<CaseDetail> caseDetails = getCaseDetails(caseId);
         return caseDetails;
@@ -333,7 +336,7 @@ public class ResearchService {
     }
 
     public void toggleCase(Long id, Long caseId) {
-        checkAuthority(id);
+        checkAuthorityAndReturnResearch(id);
         Case caseById = getCaseById(caseId);
         if (caseById.getResearchId().equals(id)) {
             if (Case.STATUS_CREATED.equals(caseById.getStatus())) {

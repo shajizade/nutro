@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "research_type")
 public class ResearchType implements Serializable {
+    public static final long FREQUENCY_24_ID = 2l;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,5 +30,10 @@ public class ResearchType implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Transient
+    public Boolean getFoodFree() {
+        return id.equals(FREQUENCY_24_ID);
     }
 }
