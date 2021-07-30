@@ -1,7 +1,6 @@
 package ir.haji.nutro.panel.notification.service;
 
 import ir.haji.nutro.exception.BadRequestException;
-import ir.haji.nutro.panel.notification.dto.PushMessage;
 import ir.haji.nutro.panel.notification.entity.Notification;
 import ir.haji.nutro.panel.notification.repo.NotificationRepo;
 import ir.haji.nutro.panel.um.entity.Role;
@@ -10,7 +9,6 @@ import ir.haji.nutro.panel.um.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,6 +28,7 @@ public class NotificationService {
     private UserService userService;
 
 
+/*
     @Scheduled(fixedDelay = 30_000)
     public void sendNotifications() {
         List<Notification> notifs = notificationRepo.findBySeen(false);
@@ -44,6 +43,7 @@ public class NotificationService {
             notificationRepo.save(notif);
         }
     }
+*/
 
     public void newNotification(Long userId, String title, String body, String link) {
         Notification notification = new Notification();

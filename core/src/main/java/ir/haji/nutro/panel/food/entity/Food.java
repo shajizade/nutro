@@ -16,6 +16,7 @@ public class Food implements Serializable {
     private String name;
     private String description;
     private String source;
+    private String category;
     private Byte[] picture;
     private String abbreviation;
     private Long itemNumber;
@@ -102,5 +103,13 @@ public class Food implements Serializable {
 
     public List<UnitUsage> getUnitUsages() {
         return unitUsages;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

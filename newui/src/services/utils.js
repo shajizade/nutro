@@ -8,5 +8,13 @@ class Utils {
       return Math.round(number);
     return null;
   }
+
+  static compareSrting(s1, s2) {
+    if (s1)
+      return s1.localeCompare(s2);
+    if (s2)
+      return -1 * s2.localeCompare(s1);
+    return 0;
+  }
 }
 export default Utils;

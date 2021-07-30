@@ -18,6 +18,7 @@ const CoreUIIcons = () => {
       <CCardBody>
         <CRow className="text-center">
           {getIconsView(freeSet)}
+          {console.log(freeSet)}
         </CRow>
       </CCardBody>
     </CCard>

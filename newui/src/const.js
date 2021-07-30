@@ -13,3 +13,81 @@ export const GENDER = {
   LACT: "زن شیرده",
 };
 
+export const CATEGORIES = {
+  Breads: {
+    icon: 'cilVoice',
+    name: 'نان',
+  },
+  Grains: {
+    icon: 'cilBraille',
+    name: 'غلات',
+  },
+  Vegetables: {
+    icon: 'cilFlower',
+    name: 'سبزیجات',
+  },
+  Desserts: {
+    icon: 'cilBirthdayCake',
+    name: 'دسر',
+  },
+  Recipes: {
+    icon: 'cilRestaurant',
+    name: 'دستور غذا',
+  },
+  Sugars_Sweets: {
+    icon: 'cilSpa',
+    name: 'شیرینی',
+  },
+  Beverages: {
+    icon: 'cilCoffee',
+    name: 'نوشیدنی',
+  },
+  Combination_Foods: {
+    icon: 'cilBurger',
+    name: 'غذای ترکیبی',
+  },
+  Meats: {
+    icon: 'cilPool',
+    name: 'گوشت',
+  },
+  Eggs: {
+    icon: 'cilAnimal',
+    name: 'تخم مرغ',
+  },
+  Fish: {
+    icon: 'cilToggleOn',
+    name: 'ماهی',
+  },
+  Dairy_Products: {
+    icon: 'cilBeaker',
+    name: 'لبنیات',
+  },
+  Fats_Oils: {
+    icon: 'cilPaintBucket',
+    name: 'روغن',
+  },
+  Nuts_Seeds: {
+    icon: 'cilBlurLinear	',
+    name: 'دانه‌ها',
+  },
+  Spices_Herbs: {
+    icon: 'cilRain',
+    name: 'سبزیجات و ادویه',
+  },
+  Fruits: {
+    icon: 'cilApple',
+    name: 'میوه‌ها',
+  },
+  Poultry: {
+    icon: 'cilMusicNote',
+    name: 'مرغ',
+  },
+  Sauces_Dips: {
+    icon: 'cilSpaceBar',
+    name: 'سس',
+  },
+  Soups: {
+    icon: 'cilBlurCircular',
+    name: 'سوپ'
+  }
+};
