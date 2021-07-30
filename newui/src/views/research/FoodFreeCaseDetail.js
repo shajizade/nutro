@@ -162,10 +162,12 @@ const FoodFreeCaseDetail = (props) => {
                   <CRow>
                     <CCol xs="6" lg="6">
                       {
-                        CATEGORIES[food.category] &&
+                        CATEGORIES[food.category] ?
                         <CIcon content={freeSet[CATEGORIES[food.category].icon]}
                                title={CATEGORIES[food.category].name}/>
-                      }{food.name} </CCol>
+                          :
+                          <CIcon />
+                      }<span style={{marginRight: "5px"}}>{food.name} </span></CCol>
                     <CCol xs="6" lg="6">
                       <CSelect custom
                                name={food.id + '_unit'}
