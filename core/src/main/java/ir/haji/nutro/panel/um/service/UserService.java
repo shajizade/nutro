@@ -4,10 +4,8 @@ import ir.haji.nutro.exception.BadRequestException;
 import ir.haji.nutro.panel.um.conf.SecurityConf;
 import ir.haji.nutro.panel.um.dto.UserAroundDto;
 import ir.haji.nutro.panel.um.entity.*;
-import ir.haji.nutro.panel.um.predefined.AdminRole;
 import ir.haji.nutro.panel.um.predefined.AdministrationRole;
 import ir.haji.nutro.panel.um.predefined.CustomerRole;
-import ir.haji.nutro.panel.um.predefined.SystemRole;
 import ir.haji.nutro.panel.um.repo.PermissionRepository;
 import ir.haji.nutro.panel.um.repo.RoleRepository;
 import ir.haji.nutro.panel.um.repo.UserPermissionRepository;
@@ -291,10 +289,12 @@ public class UserService implements UserDetailsManager {
 
     public void assignRoleToUser(String role, User user) {
         Role dbRole = accessService.getRole(role);
+/*
         if ((getCurrentUser() == null || !getCurrentUser().getRoles().contains(new AdminRole())) &&
                 (dbRole.equals(new AdminRole()) || dbRole.equals(new SystemRole()))) {
             throw new BadRequestException("تنها یک ادمین می‌تواند یک ادمین جدید بسازد!");
         }
+*/
         if (user.getRoles().contains(dbRole))
             throw new BadRequestException("این نقش قبلا به کاربر داده شده است");
         user.getRoles().add(dbRole);
