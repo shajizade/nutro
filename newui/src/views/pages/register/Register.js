@@ -17,17 +17,24 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 
-const Register = () => {
+const Register = (props) => {
   const registerer = authApi.useRegisterApi();
   const former = useForm();
   const register = ()=> {
-    //console.log(former)
-    registerer.call({
+    if (former.values['password'] !== former.values['password2']) {
+      alert('گذرواژه و تکرار آن باید یکسان باشند');
+    } else {
+      registerer.call({
         body: {
-          user: {username: former.values['username']}, password: former.values['password']
+          user: {
+            username: former.values['username']
+          }
+          ,
+          password: former.values['password']
         }
-      }
-    ).then(()=>alert('done'));
+        }
+      ).then(()=>props.history.push("/login"));
+    }
   };
   return (
     <div className="c-app c-default-layout flex-row align-items-center">

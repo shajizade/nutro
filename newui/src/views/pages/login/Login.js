@@ -66,7 +66,9 @@ const Login = (props) => {
                         <CButton color="primary" className="px-4" onClick={loginRequest}>ورود</CButton>
                       </CCol>
                       <CCol xs="6" className="text-right">
-                        <CButton color="link" className="px-0">گذرواژه را فراموش کرده‌اید؟</CButton>
+                        <Link to="/register">
+                          <CButton color="link" className="px-0">ثبت نام کنید</CButton>
+                        </Link>
                       </CCol>
                     </CRow>
                   </CForm>
