@@ -57,6 +57,12 @@ public class UserController {
     }
 
     @RolesAllowed({UnauthorizedRole.NAME})
+    @RequestMapping(value = "simpleRegister", method = RequestMethod.POST)
+    public void simpleRegister(@RequestBody UserAroundDto user) {
+        userService.register(user);
+    }
+
+    @RolesAllowed({UnauthorizedRole.NAME})
     @RequestMapping(value = "/me", method = RequestMethod.GET)
     public User getCurrentUser(HttpServletResponse response) {
         return userService.getMe();

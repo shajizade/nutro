@@ -41,7 +41,7 @@ public class ResearchSpec extends SpecificationUtil implements Specification<Res
     public Predicate toPredicate(Root<Research> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         Predicate result = null;
         if (userId != null) {
-            Predicate predicate = cb.equal(root.<Long>get("researchId"), this.userId);
+            Predicate predicate = cb.equal(root.<Long>get("userId"), this.userId);
             result = and(result, predicate, cb);
         }
         if (name != null && !name.isEmpty()) {

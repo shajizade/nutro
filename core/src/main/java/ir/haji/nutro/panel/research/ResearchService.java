@@ -184,7 +184,9 @@ public class ResearchService {
             throw new BadRequestException("باید غذا را مشخص کنید");
         if (caseDetail.getAmount() == null)
             throw new BadRequestException("مقدار نمی‌تواند خالی باشد");
-        if (caseDetail.getDays() == null || caseDetail.getDays() < 1 || caseDetail.getDays() > 365)
+        if (caseDetail.getDays() == null && caseDetail.getMeal() == null)
+            throw new BadRequestException("دوره ی زمانی نادرست است");
+        if (caseDetail.getDays() != null && (caseDetail.getDays() < 1 || caseDetail.getDays() > 365))
             throw new BadRequestException("دوره‌ی زمانی نادرست است");
         if (caseDetail.getUnitId() == null)
             throw new BadRequestException("واحد نمی‌تواند خالی باشد");

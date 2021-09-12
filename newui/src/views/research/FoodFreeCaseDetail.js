@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect} from "@coreui/react";
+import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect, CButton} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import researchApi from "../../api/researchApis";
 import foodApi from "../../api/foodApi";
 import SearchBox from "../../components/SearchBox";
 import useForm from "../../services/UseForm";
-import {DAYS, CATEGORIES} from "../../const";
+import {DAYS, CATEGORIES, MEALS} from "../../const";
 import Utils from "../../services/utils";
 import {freeSet} from "@coreui/icons";
 
@@ -15,6 +15,7 @@ const FoodFreeCaseDetail = (props) => {
   const foodSearcher = foodApi.useSearchFood();
   const detailGetter = researchApi.useGetCaseDetailApi();
   const detailUpdater = researchApi.useUpdateCaseDetailApi();
+  const detailDeleter = researchApi.useDeleteCaseDetailApi();
   const former = useForm();
   let {researchId, caseId} = useParams();
   let [foods, setFoods] = useState([]);
@@ -23,6 +24,12 @@ const FoodFreeCaseDetail = (props) => {
   const [foodOptions,setOptions] = useState([]);
   const [unitOptions,setUnitOptions] = useState([]);
 
+  let mealOptions = ()=> {
+    return Object.keys(MEALS).map((key) => {
+      console.log(key, 'key');
+      return <option value={key}>{MEALS[key]}</option>;
+    });
+  }
   const fetchFoodOptions = ({value}) => {
     foodSearcher.call({body: {name: value}})
       .then((resp)=> {
@@ -50,13 +57,21 @@ const FoodFreeCaseDetail = (props) => {
       detailUpdater.call({
         urlParams: {researchId: researchId, caseId: caseId},
         body: {
-          foodId: foodId, amount: former.values[foodId + '_' + days], days: days
+          foodId: foodId, amount: former.values[foodId + '_' + days], days: 1
           , unitId: former.values[foodId + '_unit'] ? former.values[foodId + '_unit'] : 1
         }
       }).then();
   };
+  const deleteCaseDetail = function (detailId) {
+    detailDeleter.call({
+      urlParams: {researchId: researchId, caseId: caseId, detailId: detailId},
+    }).then((response)=> {
+      fetchData();
+    });
+  };
 
   function clearForm() {
+    former.setInput('new_food', null);
     Object.keys(DAYS).forEach((days)=>former.setInput('new_' + days, ''));
   }
 
@@ -67,13 +82,13 @@ const FoodFreeCaseDetail = (props) => {
       urlParams: {researchId: researchId, caseId: caseId},
       body: {
         foodId: former.values['new_food'].id, amount: former.values['new_' + days], days: days
-        , unitId: former.values['new_unit'] ? former.values['new_unit'] : 1
+        , unitId: former.values['new_unit'] ? former.values['new_unit'] : 1, meal: former.values['meal']
       }
     }).then(()=> {
       setAdding(false);
       fetchData();
       clearForm();
-    });
+    }).catch(()=>setAdding(false));
   };
   const updateCaseUnit = function (foodId) {
     var days = Object.keys(DAYS).find(days=>former.values[foodId + '_' + days] > 0);
@@ -123,7 +138,6 @@ const FoodFreeCaseDetail = (props) => {
       }, {});
       former.setDefault({...defaultAmounts, ...defaultUnits, 'new_unit': 1});
       setFoods(resp.map(item=>item.food.food));
-      //console.log('foods',resp);
     });
   }
 
@@ -144,59 +158,74 @@ const FoodFreeCaseDetail = (props) => {
               <CCol xs="6" lg="6">
                 <CRow>
                   <CCol xs="6" lg="6"><b>ماده‌ی غذایی</b></CCol>
-                  <CCol xs="6" lg="6"><b>واحد</b></CCol>
+                  <CCol xs="6" lg="6"><b>وعده</b></CCol>
                 </CRow>
               </CCol>
               <CCol xs="6" lg="6">
                 <CRow>
-                  <CCol xs="3" lg="3"><b>مصرف روزانه</b></CCol>
-                  <CCol xs="3" lg="3"><b>هفتگی</b></CCol>
-                  <CCol xs="3" lg="3"><b>ماهانه</b></CCol>
-                  <CCol xs="3" lg="3"><b>سالانه</b></CCol>
+                  <CCol xs="6" lg="6"><b>واحد</b></CCol>
+                  <CCol xs="6" lg="6"><b>مصرف روزانه</b></CCol>
                 </CRow>
               </CCol>
             </CRow>
-            {foods && foods.map((food, index) =>
-              <CRow className={(index % 2 == 0) ? "bg-gradient-success-2" : "bg-gradient-secondary-2"}>
-                <CCol xs="6" lg="6">
-                  <CRow>
-                    <CCol xs="6" lg="6">
-                      {
-                        CATEGORIES[food.category] ?
-                        <CIcon content={freeSet[CATEGORIES[food.category].icon]}
-                               title={CATEGORIES[food.category].name}/>
-                          :
-                          <CIcon />
-                      }<span style={{marginRight: "5px"}}>{food.name} </span></CCol>
-                    <CCol xs="6" lg="6">
-                      <CSelect custom
-                               name={food.id + '_unit'}
-                               id={food.id + '_unit'}
-                               onBlur={()=>updateCaseUnit(food.id)}
-                               onChange={former.handle}
-                      >
-                        {options(details, food.unitUsages, food)}
-                      </CSelect>
-                    </CCol>
-                  </CRow>
-                </CCol>
-                <CCol xs="6" lg="6">
-                  <CRow>
-                    {
-                      Object.keys(DAYS).map((days)=>
-                        <CCol xs="3" lg="3">
-                          <CInput type="number"
-                                  name={food.id + '_' + days}
-                                  onBlur={()=>updateCase(food.id, days)}
-                                  onChange={former.handle}
-                                  defaultValue={defaultAmount(details, food.id, days)}
-                          />
-                        </CCol>
-                      )
-                    }
-                  </CRow>
-                </CCol>
-              </CRow>
+            {details && details.map((detail, index) => {
+                let food = detail.food.food;
+                return <CRow className={(index % 2 == 0) ? "bg-gradient-success-2" : "bg-gradient-secondary-2"}>
+                  <CCol xs="6" lg="6">
+                    <CRow>
+                      <CCol xs="6" lg="6">
+                        {
+                          CATEGORIES[food.category] ?
+                            <CIcon content={freeSet[CATEGORIES[food.category].icon]}
+                                   title={CATEGORIES[food.category].name}/>
+                            :
+                            <CIcon />
+                        }<span style={{marginRight: "5px"}}>{food.name} </span>
+                      </CCol>
+                      <CCol xs="6" lg="6">
+                        <span >{MEALS[detail.meal]} </span>
+                      </CCol>
+
+                    </CRow>
+                  </CCol>
+                  <CCol xs="6" lg="6">
+                    <CRow>
+                      <CCol xs="6" lg="6">
+                        <CSelect custom
+                                 name={food.id + '_unit'}
+                                 id={food.id + '_unit'}
+                                 onBlur={()=>updateCaseUnit(food.id)}
+                                 onChange={former.handle}
+                        >
+                          {options(details, food.unitUsages, food)}
+                        </CSelect>
+                      </CCol>
+                      <CCol xs="3" lg="3">
+                        <CInput type="number"
+                                name={food.id + '_1'}
+                                onBlur={()=>updateCase(food.id, 1)}
+                                onChange={former.handle}
+                                defaultValue={defaultAmount(details, food.id, 1)}
+                        />
+                      </CCol>
+                      <CCol xs="2" lg="2">
+                        <CButton
+                          href={"#"}
+                          color="danger"
+                          variant="outline"
+                          shape="square"
+                          size="sm"
+                          onClick={()=> {
+                            deleteCaseDetail(detail.id);
+                          }}
+                        >
+                          حذف
+                        </CButton>
+                      </CCol>
+                    </CRow>
+                  </CCol>
+                </CRow>
+              }
             )}
             <CRow>
               <CCol xs="6" lg="6">
@@ -212,6 +241,19 @@ const FoodFreeCaseDetail = (props) => {
                   </CCol>
                   <CCol xs="6" lg="6">
                     <CSelect custom
+                             name={'meal'}
+                             id={'meal'}
+                             onChange={former.handle}
+                    >
+                      {mealOptions()}
+                    </CSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+              <CCol xs="6" lg="6">
+                <CRow>
+                  <CCol xs="6" lg="6">
+                    <CSelect custom
                              name={'new_unit'}
                              id={'new_unit'}
                              onChange={former.handle}
@@ -219,23 +261,29 @@ const FoodFreeCaseDetail = (props) => {
                       {newFoodOptions(former.values['new_food'])}
                     </CSelect>
                   </CCol>
-                </CRow>
-              </CCol>
-              <CCol xs="6" lg="6">
-                <CRow>
-                  {
-                    Object.keys(DAYS).map((days)=>
-                      <CCol xs="3" lg="3">
-                        <CInput type="number"
-                                name={'new_' + days}
-                                id={'new_' + days}
-                                onBlur={()=>createCase(days)}
-                                onChange={former.handle}
-                                disabled={(adding) ? "disabled" : ""}
-                        />
-                      </CCol>
-                    )
-                  }
+                  <CCol xs="3" lg="3">
+                    <CInput type="number"
+                            name={'new_1'}
+                            id={'new_1'}
+                            onChange={former.handle}
+                            disabled={(adding) ? "disabled" : ""}
+                    />
+                  </CCol>
+                  <CCol xs="2" lg="2">
+                    <CButton
+                      href={"#"}
+                      color="success"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      onClick={()=> {
+                        createCase(1);
+                      }}
+                    >
+                      تایید
+                    </CButton>
+                  </CCol>
+
                 </CRow>
               </CCol>
             </CRow>

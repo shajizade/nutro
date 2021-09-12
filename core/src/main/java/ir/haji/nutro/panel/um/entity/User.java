@@ -33,16 +33,14 @@ public class User implements UserDetails {
     private Date passwordExpired;
     private Boolean isEnable;
     private String description;
+    private String username;
     @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "role"))
     private List<Role> roles;
-/*
 
-    @JsonIgnore
-    @OneToMany
-    @JoinColumn(name = "userId")
-    private List<UserPermission> userPermissions;
-*/
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public Long getId() {
         return id;
@@ -146,9 +144,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        if (email != null && !email.trim().isEmpty())
-            return email;
-        return phone;
+        return username;
     }
 
     public void setPhone(String phone) {

@@ -17,6 +17,7 @@ public class SimpleCaseDetail implements Serializable {
     private Long unitId;
     private Double amount;
     private Integer days;
+    private String meal;
 
     public Long getId() {
         return id;
@@ -66,5 +67,13 @@ public class SimpleCaseDetail implements Serializable {
 
     public void setDays(Integer days) {
         this.days = days;
+    }
+
+    public String getMeal() {
+        return meal;
+    }
+
+    public void setMeal(String meal) {
+        this.meal = meal;
     }
 }

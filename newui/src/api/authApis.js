@@ -8,5 +8,6 @@ export default {
     contentType: 'form-data', ...options
   }),
   useUserApi: (options) => useFetch({url: '/user/me', method: 'get', muteNotification: true, ...options}),
-  useLogoutApi: (options) => useFetch({url: '/logout', method: 'get', ...options})
+  useLogoutApi: (options) => useFetch({url: '/logout', method: 'get', ...options}),
+  useRegisterApi: (options) => useFetch({url: '/user/simpleRegister', method: 'post', ...options})
 }

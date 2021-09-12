@@ -88,7 +88,7 @@ const ResearchList = (props) => {
               striped
               bordered
               size="sm"
-              itemsPerPage={r.response ? r.response.pageable.pageSize : 1}
+              itemsPerPage={r.response && r.response.pageable ? r.response.pageable.pageSize : 1}
               pagination
               scopedSlots={{
                 'researchType': (item)=> (<td className="py-2">

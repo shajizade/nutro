@@ -18,7 +18,8 @@ const AlertProvider = (props) => {
       }}>
       {props.children}
       <CToaster position="top-right">
-        {toasts.map(toast=><CToast
+        {toasts.map(toast=>
+          <CToast
           className={"bg-gradient-" + toast.type + " color-white"}
           show={true}
           autohide={3000}

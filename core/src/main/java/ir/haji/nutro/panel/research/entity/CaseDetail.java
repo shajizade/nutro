@@ -13,6 +13,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "case_detail")
 public class CaseDetail implements Serializable {
+    public static final String MEAL_BREAKFAST = "BREAKFAST";
+    public static final String MEAL_SNACK_1 = "SNACK1";
+    public static final String MEAL_LUNCH = "LUNCH";
+    public static final String MEAL_SNACK_2 = "SNACK2";
+    public static final String MEAL_DINNER = "DINNER";
+    public static final String MEAL_SNACK_3 = "SNACK3";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +28,7 @@ public class CaseDetail implements Serializable {
     private Double amount;
     @JoinColumn(name = "unitId")
     private Unit unit;
+    private String meal;
     @ManyToOne
     @JoinColumns({
             @JoinColumn(updatable = false, insertable = false, name = "unitId", referencedColumnName = "unitId"),
@@ -84,6 +91,14 @@ public class CaseDetail implements Serializable {
 
     public void setDays(Integer days) {
         this.days = days;
+    }
+
+    public String getMeal() {
+        return meal;
+    }
+
+    public void setMeal(String meal) {
+        this.meal = meal;
     }
 
     @Transient

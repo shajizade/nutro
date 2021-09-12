@@ -110,8 +110,6 @@ public class UserService implements UserDetailsManager {
             throw new BadRequestException("کاربری وارد نشده است");
         if (user.getUsername() == null | user.getUsername().isEmpty())
             throw new BadRequestException("نام کاربری باید وارد شود");
-        if (user.getName() == null)
-            throw new BadRequestException("نام کاربر باید وارد شود");
 
         user.setEnable(true);
         setPassword(user, password);
@@ -185,7 +183,7 @@ public class UserService implements UserDetailsManager {
     public User findByUsername(String username) throws UsernameNotFoundException {
         if (username == null || username.isEmpty())
             return null;
-        User user = userRepository.findByPhone(username);
+        User user = userRepository.findByUsername(username);
         if (user == null)
             user = userRepository.findByEmail(username);
         return user;
@@ -342,6 +340,20 @@ public class UserService implements UserDetailsManager {
             throw new BadRequestException("ابتدا باید ایمیل یا شماره تلفن خود را با دریافت کد، تایید کنید");
         }
 
+    }
+
+    public void register(UserAroundDto userDto) {
+        if (getCurrentUser() != null)
+            throw new BadRequestException("در حالت لاگین نمی‌توانید ثبت نام کنید!");
+        if (userDto.getUser() == null)
+            throw new BadRequestException("خطا در دریافت اطلاعات");
+        if (userDto.getUser().getUsername() == null || userDto.getUser().getUsername().isEmpty())
+            throw new BadRequestException("خطا در دریافت اطلاعات");
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty())
+            throw new BadRequestException("خطا در دریافت اطلاعات");
+
+        User user = createUser(userDto.getUser(), userDto.getPassword());
+        assignRoleToUser(CustomerRole.NAME, user);
     }
 
     public String getCurrentUsername() {

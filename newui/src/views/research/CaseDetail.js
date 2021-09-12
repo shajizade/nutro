@@ -8,8 +8,8 @@ import {getParams} from "../../services/QueryString";
 
 const CaseDetail = (props) => {
   let params = getParams(props);
-  console.log('params', params);
-  return (params.foodFree ?
+  console.log('params food free', params);
+  return (params['foodFree'] === 'true' ?
       <FoodFreeCaseDetail>
       </FoodFreeCaseDetail>
       :

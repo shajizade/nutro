@@ -12,6 +12,14 @@ export const GENDER = {
   PREG: "زن باردار",
   LACT: "زن شیرده",
 };
+export const MEALS = {
+  BREAKFAST: "صبحانه",
+  SNACK1: "میان وعده اول",
+  LUNCH: "ناهار",
+  SNACK2: "میان وعده دوم",
+  DINNER: "شام",
+  SNACK3: "میان وعده سوم",
+};
 
 export const CATEGORIES = {
   Breads: {
