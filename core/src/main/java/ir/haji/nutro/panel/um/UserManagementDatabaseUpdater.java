@@ -171,7 +171,7 @@ public class UserManagementDatabaseUpdater {
         if (user != null)
             return;
         user = new User();
-        user.setPhone("admin");
+        user.setUsername("admin");
         user.setName("ادمین");
         user = userService.createUser(user, "salam");
         userService.assignRoleToUser(AdminRole.NAME, user);

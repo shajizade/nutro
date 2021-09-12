@@ -108,7 +108,7 @@ public class UserService implements UserDetailsManager {
     public User createUser(User user, String password) {
         if (user == null)
             throw new BadRequestException("کاربری وارد نشده است");
-        if (user.getUsername() == null | user.getUsername().isEmpty())
+        if (user.getUsername() == null || user.getUsername().isEmpty())
             throw new BadRequestException("نام کاربری باید وارد شود");
 
         user.setEnable(true);
