@@ -3,7 +3,7 @@ services:
   backend:
     image: java:8-jre
     container_name: backend
-    #    restart: always
+    restart: always
     command: /data/bin/core
     volumes:
       - ~/deploy/back:/data
