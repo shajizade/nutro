@@ -57,8 +57,7 @@ const AuthProvider = (props) => {
     }
     return [...new Set(roles)];
   };
-  const isAdmin = getAllRoles().includes("ADMINISTRATION");
-  const isSystemAdmin = getAllRoles().includes("ADMIN");
+  const isAdmin = getAllRoles().includes("ADMIN");
 
   const hasRole = (role) => {
     return getAllRoles().includes(role.toUpperCase());
@@ -73,8 +72,7 @@ const AuthProvider = (props) => {
         login,
         logout,
         isAdmin,
-        hasRole,
-        isSystemAdmin
+        hasRole
       }}>
       {props.children}
     </AuthContext.Provider>

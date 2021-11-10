@@ -31,6 +31,9 @@ public class User implements UserDetails {
     private String password;
     @Temporal(TemporalType.TIMESTAMP)
     private Date passwordExpired;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiresAt;
+    private Integer totalResearch;
     private Boolean isEnable;
     private String description;
     private String username;
@@ -40,6 +43,22 @@ public class User implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Date getExpiresAt() {
+        return expiresAt;
+    }
+
+    public void setExpiresAt(Date expiresAt) {
+        this.expiresAt = expiresAt;
+    }
+
+    public Integer getTotalResearch() {
+        return totalResearch;
+    }
+
+    public void setTotalResearch(Integer totalResearch) {
+        this.totalResearch = totalResearch;
     }
 
     public Long getId() {

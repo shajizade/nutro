@@ -16,4 +16,6 @@ import java.util.List;
 public interface ResearchRepo extends PagingAndSortingRepository<Research, Long>, JpaSpecificationExecutor<Research> {
     @Query("select rt from ResearchType rt")
     List<ResearchType> getAllResearchTypes();
+
+    Integer countByUserId(Long id);
 }

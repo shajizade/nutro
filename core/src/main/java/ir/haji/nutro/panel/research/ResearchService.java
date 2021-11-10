@@ -93,6 +93,8 @@ public class ResearchService {
     }
 
     public Research createResearch(Research research) {
+        userService.checkUserExpiry();
+        checkResearchCount();
         if (research.getName() == null || research.getName().isEmpty())
             throw new BadRequestException("نام مطالعه نمی‌تواند خالی باشد");
         if (research.getResearchType() == null || research.getResearchType().getId() == null)
@@ -101,6 +103,13 @@ public class ResearchService {
         research.setUserId(userService.getCurrentUser().getId());
         research.setCreateDate(new Date());
         return researchRepo.save(research);
+    }
+
+    private void checkResearchCount() {
+        User currentUser = userService.getCurrentUser();
+        Integer researchCount = researchRepo.countByUserId(currentUser.getId());
+        if (researchCount == null || currentUser.getTotalResearch() <= researchCount)
+            throw new BadRequestException("تعداد تحقیقات مجاز شما به اتمام رسیده است");
     }
 
     public void updateResearchName(Long id, Research research) {
@@ -141,6 +150,7 @@ public class ResearchService {
     }
 
     public Case addCaseToResearch(Long id, Case caseInstance) {
+        userService.checkUserExpiry();
         if ((caseInstance.getName() == null || caseInstance.getName().isEmpty())
                 && (caseInstance.getCode() == null || caseInstance.getCode().isEmpty()))
             throw new BadRequestException("نام و کد همزمان نمی‌تواند خالی باشد");
@@ -153,6 +163,7 @@ public class ResearchService {
     }
 
     public void removeCaseFromResearch(Long id, Long caseId) {
+        userService.checkUserExpiry();
         checkAuthorityAndReturnResearch(id);
         Case caseById = getCaseOfResearch(id, caseId);
         List<CaseDetail> details = getCaseDetails(id);

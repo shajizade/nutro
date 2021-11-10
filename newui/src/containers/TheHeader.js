@@ -1,7 +1,6 @@
 import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {CHeader, CToggler, CHeaderBrand, CHeaderNav} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
 import {TheHeaderDropdown} from "./index";
 
 // routes config
@@ -33,7 +32,7 @@ const TheHeader = () => {
         onClick={toggleSidebar}
       />
       <CHeaderBrand className="mx-auto d-lg-none" to="/">
-        <CIcon name="logo" height="48" alt="Logo"/>
+        Nutro
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">

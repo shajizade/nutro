@@ -1,12 +1,40 @@
-import React from "react";
-import {CWidgetDropdown, CRow, CCol, CDropdown, CDropdownMenu, CDropdownItem, CDropdownToggle} from "@coreui/react";
+import React, {useContext} from "react";
+import {
+  CWidgetDropdown,
+  CRow,
+  CCol,
+  CWidgetProgressIcon,
+  CDropdown,
+  CProgress,
+  CDropdownMenu,
+  CDropdownItem,
+  CDropdownToggle
+} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import ChartLineSimple from "../charts/ChartLineSimple";
 import ChartBarSimple from "../charts/ChartBarSimple";
-
+import {AuthContext} from "../../context/Auth/AuthProvider";
+import utils from "../../services/utils";
 const WidgetsDropdown = () => {
-  // render
-  return (
+  const auth = useContext(AuthContext);
+  console.log('cu', auth.currentUser);
+  let diffInHour = utils.dateDiffHours(auth.currentUser.expiresAt, new Date().getTime());
+  let barValue = diffInHour <= 0 ? 100 : diffInHour > 48 ? 5 : ((48 - diffInHour) * 100 / 48);
+  return (<>
+    <CRow>
+      <CWidgetProgressIcon
+        header={utils.jDate(auth.currentUser.expiresAt)}
+        text={diffInHour > 0 ? "تا انقضای حساب شما " + utils.dateDiffStr(auth.currentUser.expiresAt, new Date().getTime()) + " مانده" : "حساب شما منقضی شده"}
+        color="gradient-danger"
+        progressSlot={
+          <CProgress color={diffInHour <= 0 ? "danger" : diffInHour > 48 ? "gradient-primary" : "warning"} size="xs"
+                     value={barValue} animated className="my-3"
+          />}
+      >
+        <CIcon name="cil-speedometer" height="36"/>
+      </CWidgetProgressIcon>
+
+    </CRow>
     <CRow>
       <CCol sm="6" lg="3">
         <CWidgetDropdown
@@ -136,6 +164,7 @@ const WidgetsDropdown = () => {
         </CWidgetDropdown>
       </CCol>
     </CRow>
+    </>
   )
 }
 

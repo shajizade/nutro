@@ -10,6 +10,7 @@ import ir.haji.nutro.panel.um.repo.PermissionRepository;
 import ir.haji.nutro.panel.um.repo.RoleRepository;
 import ir.haji.nutro.panel.um.repo.UserPermissionRepository;
 import ir.haji.nutro.panel.um.repo.UserRepository;
+import ir.haji.nutro.util.Utils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -352,6 +353,8 @@ public class UserService implements UserDetailsManager {
         if (userDto.getPassword() == null || userDto.getPassword().isEmpty())
             throw new BadRequestException("خطا در دریافت اطلاعات");
 
+        userDto.getUser().setTotalResearch(1);
+        userDto.getUser().setExpiresAt(Utils.daysPlus(3));
         User user = createUser(userDto.getUser(), userDto.getPassword());
         assignRoleToUser(CustomerRole.NAME, user);
     }
@@ -364,6 +367,17 @@ public class UserService implements UserDetailsManager {
         return null;
     }
 
+    public void checkUserExpiry() {
+        if (!isCurrentUserValid())
+            throw new BadRequestException("حساب شما منقضی شده است.");
+    }
+
+    public boolean isCurrentUserValid() {
+        User currentUser = getCurrentUser();
+        return currentUser != null && (
+                currentUser.getExpiresAt() == null || currentUser.getExpiresAt().after(new Date())
+        );
+    }
     public boolean isCurrentUserAdministrator() {
         List<Role> roles = getCurrentUser().getRoles();
         for (Role role : roles) {

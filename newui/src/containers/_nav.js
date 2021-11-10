@@ -16,6 +16,7 @@ export default [
     name: 'مدیریت',
     route: '/admin',
     icon: 'cil-puzzle',
+    adminOnly: true,
     _children: [
       {
         _tag: 'CSidebarNavItem',
