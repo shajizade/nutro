@@ -108,7 +108,9 @@ public class ResearchService {
     private void checkResearchCount() {
         User currentUser = userService.getCurrentUser();
         Integer researchCount = researchRepo.countByUserId(currentUser.getId());
-        if (currentUser.getTotalResearch() == null || currentUser.getTotalResearch() <= researchCount)
+        if (researchCount != null && (
+                currentUser.getTotalResearch() == null || currentUser.getTotalResearch() <= researchCount)
+                )
             throw new BadRequestException("تعداد تحقیقات مجاز شما به اتمام رسیده است");
     }
 
