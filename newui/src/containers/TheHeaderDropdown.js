@@ -2,9 +2,13 @@ import React, {useContext} from "react";
 import {CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CImg} from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import {AuthContext} from "../context/Auth/AuthProvider";
+import {useHistory} from "react-router-dom";
+
 
 const TheHeaderDropdown = () => {
   const auth = useContext(AuthContext);
+  const history = useHistory();
+
   return (
     <CDropdown
       inNav
@@ -27,9 +31,13 @@ const TheHeaderDropdown = () => {
           color="light"
           className="text-center"
         >
-          <strong>{auth.currentUser && auth.currentUser.name}</strong>
+          <strong>{auth.currentUser && (auth.currentUser.name ? auth.currentUser.name : auth.currentUser.username)}</strong>
         </CDropdownItem>
-        <CDropdownItem onClick={auth.logout}>
+        <CDropdownItem onClick={()=> {
+          auth.logout().then(()=> {
+            history.push("/");
+          })
+        }}>
           <CIcon name="cil-lock-locked" className="mfe-2"/>
           خروج
         </CDropdownItem>

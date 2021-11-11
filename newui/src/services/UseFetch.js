@@ -66,7 +66,6 @@ const useFetch = (options)=> {
     finalOptions.mode = 'cors';
     finalOptions.credentials = 'include';
 
-    console.log(finalOptions);
     return fetch(BASE_URL + finalOptions.url, finalOptions)
       .then(resp=> {
           if (resp.status > 299 || resp.status < 200) {

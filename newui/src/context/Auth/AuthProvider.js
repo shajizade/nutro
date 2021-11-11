@@ -2,15 +2,14 @@ import React, {useEffect, useContext} from "react";
 import authApis from "../../api/authApis";
 import useStorage from "../../services/UseStorage";
 import {AlertContext} from "../../context/AlertProvider";
-
 export const AuthContext = React.createContext();
 
 const AuthProvider = (props) => {
+
   const alert = useContext(AlertContext);
   const loginApi = authApis.useLoginApi({showSuccessMessage: false, shouldLogout: false, showError: false});
   const userApi = authApis.useUserApi({showError: false, initialLoading: true});
   const logoutApi = authApis.useLogoutApi({successMessage: null});
-  //const history=useHistory();
   const [currentUser,setCurrentUser]= useStorage('currentUser', null);
   useEffect(() => {
     getUser();
@@ -21,7 +20,7 @@ const AuthProvider = (props) => {
       .then((resp)=> {
         setCurrentUser(resp);
       })
-      .catch((resp)=> {
+      .catch(()=> {
         setCurrentUser(null);
       });
   };
@@ -37,10 +36,9 @@ const AuthProvider = (props) => {
 
 
   const logout = () => {
-    // delete_cookie("SESSION");
-    logoutApi.call()
+    return logoutApi.call()
       .then(() => {
-        getUser()
+        setCurrentUser(null);
       });
   };
 
