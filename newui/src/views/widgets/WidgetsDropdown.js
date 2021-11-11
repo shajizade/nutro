@@ -20,6 +20,7 @@ const WidgetsDropdown = () => {
   console.log('cu', auth.currentUser);
   let diffInHour = utils.dateDiffHours(auth.currentUser.expiresAt, new Date().getTime());
   let barValue = diffInHour <= 0 ? 100 : diffInHour > 48 ? 5 : ((48 - diffInHour) * 100 / 48);
+  console.log('current user=', auth.currentUser, auth.currentUser.expiresAt);
   return (<>
     <CRow>
       <CWidgetProgressIcon

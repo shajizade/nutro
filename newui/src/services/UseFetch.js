@@ -74,7 +74,8 @@ const useFetch = (options)=> {
           }
           else {
             const contentType = resp.headers.get("content-type");
-            if (contentType && contentType.indexOf("application/json") !== -1)
+            if (finalOptions.forceJson ||
+              (contentType && contentType.indexOf("application/json") !== -1))
               return resp.json();
             else
               return resp.text();

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {
   CCreateElement,
@@ -12,13 +12,21 @@ import {
   CSidebarNavItem
 } from "@coreui/react";
 import navigation from "./_nav";
+import {AuthContext} from "../context/Auth/AuthProvider";
 
 // sidebar nav config
 
-const TheSidebar = () => {
-  const dispatch = useDispatch()
-  const show = useSelector(state => state.sidebarShow)
 
+const TheSidebar = () => {
+  const auth = useContext(AuthContext);
+  const dispatch = useDispatch()
+  const show = useSelector(state => state.sidebarShow);
+  let filterByRole = (items)=> {
+    if (!auth.isAdmin()) {
+      return items.filter(item=>!item.adminOnly);
+    }
+    return items;
+  }
   return (
     <CSidebar
       show={show}
@@ -31,7 +39,7 @@ const TheSidebar = () => {
       <CSidebarNav>
 
         <CCreateElement
-          items={navigation}
+          items={filterByRole(navigation)}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,

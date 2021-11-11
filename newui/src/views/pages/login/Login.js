@@ -25,7 +25,8 @@ const Login = (props) => {
         props.history.push("/");
       }
     );
-  }
+  };
+  
   return (
 
 

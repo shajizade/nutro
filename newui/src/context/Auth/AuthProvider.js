@@ -27,8 +27,7 @@ const AuthProvider = (props) => {
   };
 
   const login = (user) => {
-    console.log(user);
-    return loginApi.call({body: user})
+    return loginApi.call({body: user, forceJson: true})
       .then((resp)=> {
         setCurrentUser(resp);
       }).catch(ex=> {
@@ -57,12 +56,14 @@ const AuthProvider = (props) => {
     }
     return [...new Set(roles)];
   };
-  const isAdmin = getAllRoles().includes("ADMIN");
+  const isAdmin = ()=> {
+    return getAllRoles().includes("ADMIN")
+  };
 
   const hasRole = (role) => {
     return getAllRoles().includes(role.toUpperCase());
   };
-  console.log('auth', currentUser);
+
   return (
     <AuthContext.Provider
       value={{
