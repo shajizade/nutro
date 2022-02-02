@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect} from "@coreui/react";
+import {CCard, CCardBody, CCardHeader, CCol, CRow, CInput, CSelect, CButton} from "@coreui/react";
 import researchApi from "../../api/researchApis";
 import useForm from "../../services/UseForm";
 import {DAYS} from "../../const";
+import SearchBox from "../../components/SearchBox";
 
 const SimpleCaseDetail = (props) => {
   const foodsGetter = researchApi.useGetResearchFoodsApi();
@@ -12,6 +13,7 @@ const SimpleCaseDetail = (props) => {
   const former = useForm();
   let {researchId, caseId, foodFree} = useParams();
   let [foods, setFoods] = useState([]);
+  let [showingFoods, setShowingFoods] = useState([]);
   let [details, setDetails] = useState([]);
 
   const defaultAmount = function (details, foodId, days) {
@@ -20,6 +22,15 @@ const SimpleCaseDetail = (props) => {
     let item = details.find(item=>item.food.id === foodId && item.days == days);
     return item && item.amount;
   };
+  const changeFilter = function(element){
+    const filterToken = element.target.value;
+    console.log('filter',filterToken)
+    setShowingFoods(foods.filter(food => food.name.includes(filterToken)))
+  }
+  const clearFilter = () => {
+      setShowingFoods(foods)
+      former.setInput('filter','')
+  }
   const defaultUnit = function (details, foodId) {
     if (!details)
       return 1;
@@ -45,18 +56,18 @@ const SimpleCaseDetail = (props) => {
       updateCase(foodId, days);
   }
   const options = (details, unitUsages, food)=> {
-    let result = [<option value="1">گرم</option>];
+    let result = [<option value="1" >گرم</option>];
     if (unitUsages) {
       result.push(unitUsages.map((unitUsage) => {
         if (unitUsage && unitUsage.unit)
-          return <option value={unitUsage.unit.id}
+          return <option value={unitUsage.unit.id} 
                          selected={defaultUnit(details, food.id) == unitUsage.unit.id}>{unitUsage.unit.name}</option>;
       }));
     }
     return result;
   };
   useEffect(() => {
-    foodsGetter.call({urlParams: {id: researchId}}).then(resp=>setFoods(resp));
+    foodsGetter.call({urlParams: {id: researchId}}).then(resp=>{setFoods(resp);setShowingFoods(resp)});
     detailGetter.call({urlParams: {researchId: researchId, caseId: caseId}}).then(resp=> {
       setDetails(resp);
       let defaultAmounts = resp.reduce(function (map, obj) {
@@ -81,6 +92,29 @@ const SimpleCaseDetail = (props) => {
           </CCardHeader>
           <CCardBody>
             <CRow>
+              <CCol xs="12" lg="2">فیلتر</CCol>
+              <CCol xs="12" lg="8">
+                <CInput type="text"
+                                name='filter'
+                                id='filter'
+                                onChange={changeFilter}
+                        />                
+              </CCol>
+              <CCol xs="12" lg="2">
+                <CButton
+                  color="primary"
+                  variant="outline"
+                  shape="square"
+                  size="sm"
+                  onClick={clearFilter}
+                  className="float-right"
+                >
+                  حذف فیلتر
+                </CButton>
+              </CCol>              
+            </CRow>
+            <hr></hr>
+            <CRow>
               <CCol xs="2" lg="2"><b>ماده‌ی غذایی</b></CCol>
               <CCol xs="2" lg="2"><b>واحد</b></CCol>
               <CCol xs="2" lg="2"><b>مصرف روزانه</b></CCol>
@@ -88,7 +122,7 @@ const SimpleCaseDetail = (props) => {
               <CCol xs="2" lg="2"><b>ماهانه</b></CCol>
               <CCol xs="2" lg="2"><b>سالانه</b></CCol>
             </CRow>
-            {foods && foods.map((food, index) =>
+            {showingFoods && showingFoods.map((food, index) =>
               <CRow className={(index % 2 == 0) ? "bg-gradient-success-2" : "bg-gradient-secondary-2"}>
                 <CCol xs="2" lg="2"> {food.name} </CCol>
                 <CCol xs="2" lg="2">
