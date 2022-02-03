@@ -11,7 +11,6 @@ import Utils from "../../services/utils";
 import {freeSet} from "@coreui/icons";
 
 const FoodFreeCaseDetail = (props) => {
-  console.log('FOOOOOOOOOOOOOOD FREEEEEEEEEEEEEEEE');
   const foodSearcher = foodApi.useSearchFood();
   const detailGetter = researchApi.useGetCaseDetailApi();
   const detailUpdater = researchApi.useUpdateCaseDetailApi();
@@ -26,9 +25,8 @@ const FoodFreeCaseDetail = (props) => {
 
   let mealOptions = ()=> {
     return Object.keys(MEALS).map((key) => {
-      console.log(key, 'key');
       return <option value={key}>{MEALS[key]}</option>;
-    });
+    })
   }
   const fetchFoodOptions = ({value}) => {
     foodSearcher.call({body: {name: value}})
@@ -118,7 +116,6 @@ const FoodFreeCaseDetail = (props) => {
 
   let fetchData = ()=> {
     detailGetter.call({urlParams: {researchId: researchId, caseId: caseId}}).then(resp=> {
-      console.log('main d', resp);
       resp.sort((i1, i2)=> {
         var firstFood = i1.food.food;
         var secondFood = i2.food.food;
@@ -126,7 +123,6 @@ const FoodFreeCaseDetail = (props) => {
           Utils.compareSrting(firstFood.name, secondFood.name) :
           Utils.compareSrting(firstFood.category, secondFood.category);
       })
-      console.log('main d', resp);
       setDetails(resp);
       let defaultAmounts = resp.reduce(function (map, obj) {
         map[obj.food.id + '_' + obj.days] = obj.amount;
@@ -138,11 +134,13 @@ const FoodFreeCaseDetail = (props) => {
       }, {});
       former.setDefault({...defaultAmounts, ...defaultUnits, 'new_unit': 1});
       setFoods(resp.map(item=>item.food.food));
+      former.setDefault({'meal':Object.keys(MEALS)[0]})
     });
   }
 
   useEffect(() => {
     fetchData();
+
     // eslint-disable-next-line
   }, []);
   return (
@@ -191,7 +189,8 @@ const FoodFreeCaseDetail = (props) => {
                   <CCol xs="6" lg="6">
                     <CRow>
                       <CCol xs="6" lg="6">
-                        <CSelect custom
+                        <span>{detail?.unit?.name}</span>
+{/*                         <CSelect custom
                                  name={food.id + '_unit'}
                                  id={food.id + '_unit'}
                                  onBlur={()=>updateCaseUnit(food.id)}
@@ -199,15 +198,18 @@ const FoodFreeCaseDetail = (props) => {
                         >
                           {options(details, food.unitUsages, food)}
                         </CSelect>
-                      </CCol>
+ */}                      </CCol>
                       <CCol xs="3" lg="3">
-                        <CInput type="number"
+                        <span>
+                          {defaultAmount(details, food.id, 1)}
+                        </span>
+{/*                         <CInput type="number"
                                 name={food.id + '_1'}
                                 onBlur={()=>updateCase(food.id, 1)}
                                 onChange={former.handle}
                                 defaultValue={defaultAmount(details, food.id, 1)}
                         />
-                      </CCol>
+ */}                      </CCol>
                       <CCol xs="2" lg="2">
                         <CButton
                           href={"#"}

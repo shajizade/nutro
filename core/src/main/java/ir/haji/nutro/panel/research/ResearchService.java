@@ -203,10 +203,11 @@ public class ResearchService {
             throw new BadRequestException("دوره‌ی زمانی نادرست است");
         if (caseDetail.getUnitId() == null)
             throw new BadRequestException("واحد نمی‌تواند خالی باشد");
-        checkAuthorityAndReturnResearch(id);
+        Research research=checkAuthorityAndReturnResearch(id);
         getCaseOfResearch(id, caseId);
         unitService.getUnitUsage(caseDetail.getFoodId(), caseDetail.getUnitId());
-        removeCaseDetailByCaseIdAndFoodId(caseId, caseDetail.getFoodId());
+        if(!research.getResearchType().getFoodFree())
+            removeCaseDetailByCaseIdAndFoodId(caseId, caseDetail.getFoodId());
         caseDetail.setId(null);
         caseDetail.setCaseId(caseId);
         return simpleCaseDetailRepo.save(caseDetail);
